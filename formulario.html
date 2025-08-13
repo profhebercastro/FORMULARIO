@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa: Geração de Perguntas sobre o Mercado de Ações</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        :root { --primary-color: #003366; --light-gray: #f4f4f9; --dark-gray: #333; --border-color: #ddd; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light-gray); color: var(--dark-gray); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .form-container { width: 100%; max-width: 800px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 20px; }
+        .logo { max-height: 70px; width: auto; }
+        main { background-color: white; padding: 30px 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1, h2 { font-weight: 700; color: var(--primary-color); text-align: center; margin-bottom: 30px; }
+        .section-intro { text-align: center; margin-bottom: 30px; font-style: italic; color: #555; line-height: 1.6; }
+        .question-block { margin-bottom: 30px; }
+        .question-block > p, .consent-title { font-weight: 600; margin-bottom: 10px; }
+        .options label, .checkbox-label { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.2s ease; }
+        .options label:hover, .checkbox-label:hover { background-color: #f0f3f8; }
+        input[type="radio"], input[type="checkbox"] { margin-right: 12px; transform: scale(1.1); }
+        .matrix-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .matrix-table th, .matrix-table td { padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); }
+        .matrix-table th { font-weight: 600; font-size: 0.9rem; color: #555; }
+        .matrix-table td:first-child { text-align: left; font-weight: 600; }
+        input[type="text"], input[type="email"], textarea { width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 1rem; }
+        textarea { min-height: 250px; resize: vertical; }
+        button { display: block; width: 100%; padding: 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease; margin-top: 20px; }
+        button:hover { background-color: #004b8d; }
+        button:disabled { background-color: #aaa; cursor: not-allowed; }
+        #profile-section, #task-section { display: none; }
+        .consent-text { max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem; text-align: justify; line-height: 1.6; }
+        .consent-text p, .consent-text li { margin-bottom: 1em; }
+        .consent-text ol { padding-left: 20px; }
+        #example-questions-container { background-color: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        #example-questions-container h3 { margin-top: 0; font-size: 1.1rem; }
+        #example-questions-list { padding-left: 20px; margin-top: 15px; }
+        #example-questions-list li { margin-bottom: 8px; }
+        .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .custom-modal { background: white; padding: 0; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 400px; text-align: center; animation: modal-fade-in 0.3s ease; }
+        .modal-header { background-color: var(--primary-color); color: white; padding: 15px 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; }
+        .modal-header h3 { margin: 0; font-size: 1.2rem; }
+        .modal-body { padding: 25px 20px; font-size: 1rem; line-height: 1.6; }
+        .modal-footer { padding: 15px 20px; border-top: 1px solid var(--border-color); }
+        .modal-footer button { display: inline-block; width: auto; padding: 10px 30px; margin: 0; background-color: var(--primary-color); }
+        @keyframes modal-fade-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+    <div id="custom-alert-overlay" class="custom-modal-overlay">
+        <div class="custom-modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Alerta</h3>
+            </div>
+            <div class="modal-body">
+                <p id="modal-message">Mensagem de exemplo.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-close-btn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <header class="page-header">
+            <img src="https://ffclrp.usp.br/assets/img/logo-FFCLRP.png" alt="Logotipo da FFCLRP-USP" class="logo">
+            <img src="https://lh5.googleusercontent.com/xfdeSkzg566LwxE7xDvTjc0H4fQuQ0Claod5wtwNj0FGeVsv_UI8JJBT4fl07oaKI_X9nz3qbpeGfzbF3nIkJhe-UPf6-yYIyLp6OI2BeWYslhN2gYXOIhphcxg_5ainskqPEFauAI8=w1280" alt="Logotipo do PPG-CA" class="logo">
+        </header>
+
+        <main>
+            <h1>Plataforma de Pesquisa</h1>
+            
+            <form id="research-form">
+                
+                <!-- ETAPA 1: VALIDAÇÃO E CONSENTIMENTO -->
+                <section id="gate-section">
+                    <!-- Conteúdo será injetado pelo JavaScript -->
+                </section>
+
+                <!-- ETAPA 2: PERFIL DO PARTICIPANTE (ESCONDIDA) -->
+                <section id="profile-section">
+                     <!-- Conteúdo é injetado dinamicamente pelo JS -->
+                </section>
+                
+                <!-- ETAPA 3: TAREFA PRINCIPAL (ESCONDIDA) -->
+                <section id="task-section">
+                    <!-- Conteúdo será gerado dinamicamente aqui -->
+                </section>
+            </form>
+        </main>
+    </div>
+
+    <script>
+        // --- INÍCIO DO CÓDIGO JAVASCRIPT COMPLETO ---
+
+        // ### SUBSTITUA PELA SUA URL FINAL DO APPS SCRIPT ###
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkNDPsaYA2qXtPcJ45HHbcroKOhFGIHklhidjC7ML_5VW1LxL9ZF_fm02aJf9Bc160cw/exec';
+
+        // --- LÓGICA DO MODAL DE ALERTA ---
+        function showAlert(message, title = 'Alerta') {
+            const overlay = document.getElementById('custom-alert-overlay');
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            if (overlay) overlay.style.display = 'flex';
+        }
+        document.getElementById('modal-close-btn').addEventListener('click', () => {
+            document.getElementById('custom-alert-overlay').style.display = 'none';
+        });
+        
+        // --- ELEMENTOS GLOBAIS E DADOS ---
+        const gateSection = document.getElementById('gate-section');
+        const profileSection = document.getElementById('profile-section');
+        const taskSection = document.getElementById('task-section');
+        const researchForm = document.getElementById('research-form');
+        const referenceQuestions = [ "Qual foi o preço de fechamento da PETROBRAS no dia 10/06/2025?", "Preço de abertura para a ação SUZB3 em 06/06/2025.", "Qual o código de negociação da empresa Petrobras?", "Qual o volume negociado para o setor de Materiais Básicos no dia 13/06/2025?", "Qual o valor total de negócios do setor de bancos no dia 03/06/2025?", "Qual foi a quantidade de ações da JBS negociadas em 03/06/2025?", "Qual foi o preço mínimo da PETR4 em 11/06/2025?", "Qual foi o valor mínimo para a ação ITSA4 em 16/06/2025?", "Me diga o preço máximo da companhia Ambev no dia 20/06/2025.", "Mostre as ações do setor de elétrico.", "Qual o intervalo intradiário absoluto da GOAU4 no pregão de 04/06/2025?", "Top 2 ações com maior alta percentual do setor de Papel e Celulose em 16/06/2025.", "Quais as 3 ações do setor elétrico com maior baixa percentual em 17/06/2025?", "Liste as 2 ações de menor variação percentual no dia 10/06/2025.", "Qual foi a ação de maior variação percentual em 12/06/2025?", "Mostre os 3 papéis com a maior baixa percentual do dia 23/06/2025.", "Liste as cinco ações com a menor variação percentual do setor de Transporte em 20/06/2025.", "Qual foi a variação absoluta da ação do IFNC com a maior alta percentual em 10/06/2025?", "Qual o ticker da ação do setor Financeiro com o maior intervalo intradiário percentual em 30/06/2025?", "Da ação do IAGRO com a maior alta percentual em 16/06/2025, qual foi sua variação intradiária absoluta?" ];
+        
+        function shuffleArray(array) { 
+            for (let i = array.length - 1; i > 0; i--) { 
+                const j = Math.floor(Math.random() * (i + 1)); 
+                [array[i], array[j]] = [array[j], array[i]]; 
+            } 
+            return array; 
+        }
+
+        // --- FUNÇÕES DE CONTROLE DE FLUXO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            setupGateSection();
+            setupProfileSection();
+            researchForm.addEventListener('submit', submitForm);
+        });
+
+        function setupGateSection() {
+            gateSection.innerHTML = `
+                <h2>Consentimento para Participação</h2>
+                <p class="section-intro">Por favor, preencha as informações abaixo e leia o Termo de Consentimento para continuar.</p>
+                <div class="question-block">
+                    <p>Seu Nome Completo:</p>
+                    <input type="text" id="user-name" required>
+                </div>
+                <div class="question-block">
+                    <p>Seu E-mail:</p>
+                    <input type="email" id="user-email" required>
+                </div>
+                <div class="question-block">
+                    <p>Verificação de Idade:</p>
+                    <label class="checkbox-label"><input type="checkbox" id="age-check" name="age-check"> Declaro que sou maior de 18 anos.</label>
+                </div>
+                <div class="question-block">
+                    <p class="consent-title">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</p>
+                    <div class="consent-text">
+                        <p><strong>PROJETO: Geração de consultas SPARQL a partir de linguagem natural</strong></p>
+                        <p>Você está sendo convidado(a) a participar do projeto de pesquisa acima citado. O documento abaixo contém todas as informações necessárias sobre a pesquisa que estamos fazendo. Sua colaboração nesse estudo será de muita importância para nós.</p>
+                        <p><strong>Estou ciente de que:</strong></p>
+                        <ol>
+                            <li>O estudo faz parte de um projeto de mestrado do Programa de Pós-Graduação em Computação Aplicada (PPG-CA) da Faculdade de Filosofia, Ciências e Letras de Ribeirão Preto (FFCLRP) da Universidade de São Paulo e tem por objetivo propor uma abordagem para a tradução de perguntas realizadas em linguagem natural (português) para consultas SPARQL, bem como desenvolver uma ferramenta de suporte (Natural2SPARQL) para essa transformação.</li>
+                            <li>Como parte da metodologia do projeto, minha participação consistirá em duas etapas principais. Primeiramente, deverei responder a um breve questionário para avaliar meu conhecimento prévio sobre o mercado de ações da bolsa de valores brasileira (B3). Na sequência, serei apresentado(a) a um conjunto de exemplos de perguntas e minha tarefa será elaborar 20 novas perguntas em linguagem natural (português) sobre o mercado de ações, as quais poderão levar em consideração os exemplos apresentados ou não. As perguntas que eu criar serão utilizadas pela equipe de pesquisa para avaliar a capacidade de tradução da abordagem/ferramenta Natural2SPARQL.</li>
+                            <li>A pesquisa não envolve a coleta de dados pessoais dos participantes, apenas informações básicas sobre o conhecimento do participante do funcionamento do mercado de ações/B3 e o conjunto de perguntas propostas. Os resultados obtidos durante essa pesquisa serão mantidos em sigilo. Somente pessoas que fazem parte da equipe da pesquisa poderão ter acesso aos seus registros para acompanhar a pesquisa e analisar os dados obtidos, de acordo com as normas brasileiras que os protegem. Os resultados obtidos somente poderão ser divulgados de forma anônima em publicações científicas produzidas como decorrência do projeto, incluindo a própria dissertação de mestrado tema do projeto.</li>
+                            <li>Caso desejar, poderei tomar conhecimento dos resultados ao final desta pesquisa.</li>
+                        </ol>
+                        <hr>
+                        <p><strong>No caso de haver dúvidas sobre esse estudo, você poderá consultar:</strong><br>
+                        Pesquisador Responsável: Heber Gustavo Xavier de Castro<br>
+                        Programa de Pós-Graduação em Computação Aplicada (PPG-CA)<br>
+                        Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>
+                        Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>
+                        E-mail: heber.castro@usp.br</p>
+                        <p>Orientador do Pesquisador Responsável: Prof. Dr. Cléver Ricardo Guareis de Farias<br>
+                        Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>
+                        Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>
+                        Fone: (16) 3315-0564<br>
+                        E-mail: farias@ffclrp.usp.br</p>
+                        <p><strong>Para denúncias e/ou reclamações referentes aos aspectos éticos da pesquisa, entrar em contato com:</strong><br>
+                        Comitê de Ética em Pesquisa (CEP) da FFCLRP USP<br>
+                        Av. Bandeirantes, 3900 - Bloco 23 - Casa 37 - 14040-901 - Ribeirão Preto (SP)<br>
+                        Fone: (16) 3315-4811 / Fax: (16) 3633-2660<br>
+                        homepage: http://www.ffclrp.usp.br<br>
+                        E-mail: coetp@ffclrp.usp.br</p>
+                    </div>
+                    <label class="checkbox-label"><input type="checkbox" id="consent-check" name="consent-check"> Li o Termo de Consentimento acima e concordo em participar da pesquisa.</label>
+                </div>
+                <button type="button" id="proceed-btn">Prosseguir para a Pesquisa</button>
+            `;
+            document.getElementById('proceed-btn').addEventListener('click', proceedToProfile);
+        }
+
+        function setupProfileSection() {
+             profileSection.innerHTML = `<h2>Perfil do Participante</h2><p class="section-intro">Para que nossa pesquisa seja bem-sucedida, é fundamental entender o seu perfil.<br><strong>Lembre-se:</strong> o objetivo não é testá-lo(a), mas sim nos ajudar a analisar os dados de forma anônima.</p><div class="question-block"><p>1. Em uma escala de 1 a 3, como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p><div class="options"><label><input type="radio" name="knowledge" value="1" required> 1 - Nenhum/pouco conhecimento</label><label><input type="radio" name="knowledge" value="2"> 2 - Conhecimento intermediário</label><label><input type="radio" name="knowledge" value="3"> 3 - Conhecimento avançado</label></div></div><div class="question-block"><p>2. Você já investiu ou investe em ações diretamente na bolsa de valores?</p><div class="options"><label><input type="radio" name="experience" value="1" required> Não, e não tenho interesse ou planos de investir.</label><label><input type="radio" name="experience" value="2"> Não, mas pretendo investir no futuro.</label><label><input type="radio" name="experience" value="3"> Já investi no passado, mas não invisto mais.</label><label><input type="radio" name="experience" value="4"> Sim, invisto atualmente.</label></div></div><div class="question-block"><p>3. Quão familiar você é com os seguintes termos do mercado de ações?</p><table class="matrix-table"><thead><tr><th></th><th>Nunca ouvi falar</th><th>Já ouvi falar, mas não sei o que é</th><th>Sei o que significa</th></tr></thead><tbody><tr><td>Ticker (ex: PETR4)</td><td><input type="radio" name="term_ticker" value="1" required></td><td><input type="radio" name="term_ticker" value="2"></td><td><input type="radio" name="term_ticker" value="3"></td></tr><tr><td>Índice Ibovespa (IBOV)</td><td><input type="radio" name="term_ibov" value="1" required></td><td><input type="radio" name="term_ibov" value="2"></td><td><input type="radio" name="term_ibov" value="3"></td></tr><tr><td>Ação Preferencial, Ordinária e UNIT</td><td><input type="radio" name="term_types" value="1" required></td><td><input type="radio" name="term_types" value="2"></td><td><input type="radio" name="term_types" value="3"></td></tr><tr><td>Variação Intradiária Absoluta</td><td><input type="radio" name="term_var_abs" value="1" required></td><td><input type="radio" name="term_var_abs" value="2"></td><td><input type="radio" name="term_var_abs" value="3"></td></tr><tr><td>Variação Intradiária Percentual</td><td><input type="radio" name="term_var_per" value="1" required></td><td><input type="radio" name="term_var_per" value="2"></td><td><input type="radio" name="term_var_per" value="3"></td></tr><tr><td>Intervalo Intradiário Absoluto</td><td><input type="radio" name="term_int_abs" value="1" required></td><td><input type="radio" name="term_int_abs" value="2"></td><td><input type="radio" name="term_int_abs" value="3"></td></tr><tr><td>Intervalo Intradiário Percentual</td><td><input type="radio" name="term_int_per" value="1" required></td><td><input type="radio" name="term_int_per" value="2"></td><td><input type="radio" name="term_int_per" value="3"></td></tr></tbody></table></div><button type="button" id="start-task-btn">Iniciar Tarefa</button>`;
+             document.getElementById('start-task-btn').addEventListener('click', startTask);
+        }
+
+        function proceedToProfile() {
+            if (!document.getElementById('user-name').value.trim() || !document.getElementById('user-email').value.trim()) { showAlert('Por favor, preencha seu nome e e-mail.'); return; }
+            if (!document.getElementById('age-check').checked) { showAlert('A participação é restrita a maiores de 18 anos.'); return; }
+            if (!document.getElementById('consent-check').checked) { showAlert('É necessário concordar com o Termo para participar.'); return; }
+            gateSection.style.display = 'none';
+            profileSection.style.display = 'block';
+        }
+
+        function startTask() {
+            const knowledgeInput = profileSection.querySelector('input[name="knowledge"]:checked');
+            const experienceInput = profileSection.querySelector('input[name="experience"]:checked');
+            const termGroups = ['term_ticker', 'term_ibov', 'term_types', 'term_var_abs', 'term_var_per', 'term_int_abs', 'term_int_per'];
+            let allTermsAnswered = termGroups.every(group => profileSection.querySelector(`input[name="${group}"]:checked`));
+
+            if (!knowledgeInput || !experienceInput || !allTermsAnswered) {
+                showAlert('Por favor, responda a todas as perguntas do perfil para continuar.');
+                return;
+            }
+
+            const knowledgeLevel = parseInt(knowledgeInput.value);
+            let numExamplesToShow = 0, levelDescription = "";
+            if (knowledgeLevel === 1) { numExamplesToShow = 6; levelDescription = "Iniciante"; } 
+            else if (knowledgeLevel === 2) { numExamplesToShow = 8; levelDescription = "Intermediário"; } 
+            else { numExamplesToShow = 10; levelDescription = "Avançado"; }
+            
+            const shuffledQuestions = shuffleArray([...referenceQuestions]);
+            const selectedExamples = shuffledQuestions.slice(0, numExamplesToShow);
+
+            taskSection.innerHTML = `<h2>Tarefa Principal (Nível ${levelDescription})</h2><div id="example-questions-container"><h3>A seguir, apresentamos ${numExamplesToShow} exemplos de perguntas. Use-os como inspiração para criar suas 20 novas perguntas.</h3><ol id="example-questions-list"></ol></div><div class="question-block"><p>Por favor, elabore suas 20 novas perguntas no campo abaixo:</p><textarea id="user-questions" name="user-questions" placeholder="Digite suas 20 perguntas aqui, uma por linha..." required></textarea></div><button type="submit">Enviar Respostas</button>`;
+            
+            const exampleList = taskSection.querySelector('#example-questions-list');
+            selectedExamples.forEach(q => { const li = document.createElement('li'); li.textContent = q; exampleList.appendChild(li); });
+
+            profileSection.style.display = 'none';
+            taskSection.style.display = 'block';
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            const submitButton = researchForm.querySelector('button[type="submit"]');
+            const userGeneratedQuestions = document.getElementById('user-questions').value;
+
+            if (!userGeneratedQuestions.trim()) {
+                showAlert('Por favor, elabore suas 20 perguntas antes de enviar.');
+                return;
+            }
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Enviando...';
+            }
+
+            const finalData = {
+                name: document.getElementById('user-name').value,
+                email: document.getElementById('user-email').value,
+                profile: {
+                    knowledge: profileSection.querySelector('input[name="knowledge"]:checked').value,
+                    experience: profileSection.querySelector('input[name="experience"]:checked').value,
+                    term_familiarity: {
+                        ticker: profileSection.querySelector('input[name="term_ticker"]:checked').value,
+                        ibov: profileSection.querySelector('input[name="term_ibov"]:checked').value,
+                        types: profileSection.querySelector('input[name="term_types"]:checked').value,
+                        var_abs: profileSection.querySelector('input[name="term_var_abs"]:checked').value,
+					    var_per: profileSection.querySelector('input[name="term_var_per"]:checked').value,
+					    int_abs: profileSection.querySelector('input[name="term_int_abs"]:checked').value,
+					    int_per: profileSection.querySelector('input[name="term_int_per"]:checked').value,
+                    }
+                },
+                userGeneratedQuestions: userGeneratedQuestions
+            };
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(finalData),
+            })
+            .then(response => {
+                // O Google Apps Script redireciona em caso de sucesso, o que causa um erro de CORS no navegador
+                // que não podemos capturar. Por isso, aqui tratamos a ausência de um erro de rede como sucesso.
+                // Esta é uma limitação da forma como o 'fetch' interage com o redirecionamento 302 do Apps Script.
+                if (response.type === 'opaque' || response.ok) {
+                    return { result: 'success' };
+                }
+                // Se a resposta NÃO for 'opaque', algo mais sério deu errado e podemos tentar ler
+                return response.json().then(errorData => {
+                    throw new Error(errorData.error || 'Erro desconhecido na resposta do servidor.');
+                });
+            })
+            .then(data => {
+                 if (data.result === 'success') {
+                    showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
+                    researchForm.reset();
+                    // Limpa o conteúdo dinâmico para reiniciar
+                    profileSection.innerHTML = '';
+                    taskSection.innerHTML = '';
+                    setupGateSection(); // Remonta a seção inicial
+                    setupProfileSection(); // Remonta a seção de perfil (escondida)
+                    gateSection.style.display = 'block';
+                    profileSection.style.display = 'none';
+                    taskSection.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao enviar dados:', error);
+                showAlert('Ocorreu um erro ao enviar suas respostas. Por favor, verifique sua conexão e tente novamente. Detalhes: ' + error.message, 'Erro no Envio');
+            })
+            .finally(() => {
+                if(submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Enviar Respostas';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
