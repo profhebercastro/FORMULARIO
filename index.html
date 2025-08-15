@@ -70,7 +70,7 @@
         <main>
             <h1>Plataforma de Pesquisa</h1>
             
-            <form id="research-form">
+            <form id="research-form" novalidate>
                 
                 <!-- ETAPA 1: VALIDAÇÃO E CONSENTIMENTO -->
                 <section id="gate-section">
@@ -90,11 +90,12 @@
         </main>
     </div>
 
+    
     <script>
         // --- INÍCIO DO CÓDIGO JAVASCRIPT COMPLETO ---
 
-        // ### SUBSTITUA PELA SUA URL FINAL DO APPS SCRIPT ###
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkNDPsaYA2qXtPcJ45HHbcroKOhFGIHklhidjC7ML_5VW1LxL9ZF_fm02aJf9Bc160cw/exec';
+        // *** URL CORRIGIDA ***
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx6amZsFMVqN3Lck5Ol2BTClBlugcKJWj1ncvGLppxc4h7vXQ__PlDG4ktI7C_VOw0sPw/exec';
 
         // --- LÓGICA DO MODAL DE ALERTA ---
         function showAlert(message, title = 'Alerta') {
@@ -130,56 +131,7 @@
         });
 
         function setupGateSection() {
-            gateSection.innerHTML = `
-                <h2>Consentimento para Participação</h2>
-                <p class="section-intro">Por favor, preencha as informações abaixo e leia o Termo de Consentimento para continuar.</p>
-                <div class="question-block">
-                    <p>Seu Nome Completo:</p>
-                    <input type="text" id="user-name" required>
-                </div>
-                <div class="question-block">
-                    <p>Seu E-mail:</p>
-                    <input type="email" id="user-email" required>
-                </div>
-                <div class="question-block">
-                    <p>Verificação de Idade:</p>
-                    <label class="checkbox-label"><input type="checkbox" id="age-check" name="age-check"> Declaro que sou maior de 18 anos.</label>
-                </div>
-                <div class="question-block">
-                    <p class="consent-title">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</p>
-                    <div class="consent-text">
-                        <p><strong>PROJETO: Geração de consultas SPARQL a partir de linguagem natural</strong></p>
-                        <p>Você está sendo convidado(a) a participar do projeto de pesquisa acima citado. O documento abaixo contém todas as informações necessárias sobre a pesquisa que estamos fazendo. Sua colaboração nesse estudo será de muita importância para nós.</p>
-                        <p><strong>Estou ciente de que:</strong></p>
-                        <ol>
-                            <li>O estudo faz parte de um projeto de mestrado do Programa de Pós-Graduação em Computação Aplicada (PPG-CA) da Faculdade de Filosofia, Ciências e Letras de Ribeirão Preto (FFCLRP) da Universidade de São Paulo e tem por objetivo propor uma abordagem para a tradução de perguntas realizadas em linguagem natural (português) para consultas SPARQL, bem como desenvolver uma ferramenta de suporte (Natural2SPARQL) para essa transformação.</li>
-                            <li>Como parte da metodologia do projeto, minha participação consistirá em duas etapas principais. Primeiramente, deverei responder a um breve questionário para avaliar meu conhecimento prévio sobre o mercado de ações da bolsa de valores brasileira (B3). Na sequência, serei apresentado(a) a um conjunto de exemplos de perguntas e minha tarefa será elaborar 20 novas perguntas em linguagem natural (português) sobre o mercado de ações, as quais poderão levar em consideração os exemplos apresentados ou não. As perguntas que eu criar serão utilizadas pela equipe de pesquisa para avaliar a capacidade de tradução da abordagem/ferramenta Natural2SPARQL.</li>
-                            <li>A pesquisa não envolve a coleta de dados pessoais dos participantes, apenas informações básicas sobre o conhecimento do participante do funcionamento do mercado de ações/B3 e o conjunto de perguntas propostas. Os resultados obtidos durante essa pesquisa serão mantidos em sigilo. Somente pessoas que fazem parte da equipe da pesquisa poderão ter acesso aos seus registros para acompanhar a pesquisa e analisar os dados obtidos, de acordo com as normas brasileiras que os protegem. Os resultados obtidos somente poderão ser divulgados de forma anônima em publicações científicas produzidas como decorrência do projeto, incluindo a própria dissertação de mestrado tema do projeto.</li>
-                            <li>Caso desejar, poderei tomar conhecimento dos resultados ao final desta pesquisa.</li>
-                        </ol>
-                        <hr>
-                        <p><strong>No caso de haver dúvidas sobre esse estudo, você poderá consultar:</strong><br>
-                        Pesquisador Responsável: Heber Gustavo Xavier de Castro<br>
-                        Programa de Pós-Graduação em Computação Aplicada (PPG-CA)<br>
-                        Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>
-                        Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>
-                        E-mail: heber.castro@usp.br</p>
-                        <p>Orientador do Pesquisador Responsável: Prof. Dr. Cléver Ricardo Guareis de Farias<br>
-                        Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>
-                        Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>
-                        Fone: (16) 3315-0564<br>
-                        E-mail: farias@ffclrp.usp.br</p>
-                        <p><strong>Para denúncias e/ou reclamações referentes aos aspectos éticos da pesquisa, entrar em contato com:</strong><br>
-                        Comitê de Ética em Pesquisa (CEP) da FFCLRP USP<br>
-                        Av. Bandeirantes, 3900 - Bloco 23 - Casa 37 - 14040-901 - Ribeirão Preto (SP)<br>
-                        Fone: (16) 3315-4811 / Fax: (16) 3633-2660<br>
-                        homepage: http://www.ffclrp.usp.br<br>
-                        E-mail: coetp@ffclrp.usp.br</p>
-                    </div>
-                    <label class="checkbox-label"><input type="checkbox" id="consent-check" name="consent-check"> Li o Termo de Consentimento acima e concordo em participar da pesquisa.</label>
-                </div>
-                <button type="button" id="proceed-btn">Prosseguir para a Pesquisa</button>
-            `;
+            gateSection.innerHTML = `<h2>Consentimento para Participação</h2><p class="section-intro">Por favor, preencha as informações abaixo e leia o Termo de Consentimento para continuar.</p><div class="question-block"><p>Seu Nome Completo:</p><input type="text" id="user-name" name="user-name" required></div><div class="question-block"><p>Seu E-mail:</p><input type="email" id="user-email" name="user-email" required></div><div class="question-block"><p>Verificação de Idade:</p><label class="checkbox-label"><input type="checkbox" id="age-check" name="age-check"> Declaro que sou maior de 18 anos.</label></div><div class="question-block"><p class="consent-title">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</p><div class="consent-text"><p><strong>PROJETO: Geração de consultas SPARQL a partir de linguagem natural</strong></p><p>Você está sendo convidado(a) a participar do projeto de pesquisa acima citado. O documento abaixo contém todas as informações necessárias sobre a pesquisa que estamos fazendo. Sua colaboração nesse estudo será de muita importância para nós.</p><p>Eu, ______________________________________________, abaixo assinado, concordo de livre e espontânea vontade em participar do estudo “Geração de consultas SPARQL a partir de linguagem natural”, e esclareço que obtive todas as informações.</p><p>Estou ciente de que:</p><ol><li>O estudo faz parte de um projeto de mestrado do Programa de Pós-Graduação em Computação Aplicada (PPG-CA) da Faculdade de Filosofia, Ciências e Letras de Ribeirão Preto (FFCLRP) da Universidade de São Paulo e tem por objetivo propor uma abordagem para a tradução de perguntas realizadas em linguagem natural (português) para consultas  SPARQL, bem como desenvolver uma ferramenta de suporte (Natural2SPARQL) para essa transformação.</li><li>Como parte da metodologia do projeto, minha participação consistirá em duas etapas principais. Primeiramente, deverei responder a um breve questionário para avaliar meu conhecimento prévio sobre o mercado de ações da bolsa de valores brasileira (B3). Na sequência, serei apresentado(a) a um conjunto de  exemplos de perguntas e minha tarefa será elaborar 20 novas perguntas em linguagem natural (português) sobre o mercado de ações, as quais poderão levar em consideração os exemplos apresentados ou não. As perguntas que eu criar serão utilizadas pela equipe de pesquisa para avaliar a capacidade de tradução da abordagem/ferramenta Natural2SPARQL.</li><li>A pesquisa não envolve a coleta de dados pessoais dos participantes, apenas informações básicas sobre o conhecimento do participante do funcionamento do mercado de ações/B3 e o conjunto de perguntas propostas. Os resultados obtidos durante essa pesquisa serão mantidos em sigilo. Somente pessoas que fazem parte da equipe da pesquisa poderão ter acesso aos seus registros para acompanhar a pesquisa e analisar os dados obtidos, de acordo com as normas brasileiras que os protegem. Os resultados obtidos somente poderão ser divulgados de forma anônima em publicações científicas produzidas como decorrência do projeto, incluindo a própria dissertação de mestrado tema do projeto.</li><li>Caso desejar, poderei tomar conhecimento dos resultados ao final desta pesquisa.</li></ol><p>O ato de preencher o questionário contido neste formulário indica minha concordância na participação na pesquisa.</p><hr><p>No caso de haver dúvidas sobre esse estudo, você poderá consultar:</p><p><strong>Pesquisador Responsável: Heber Gustavo Xavier de Castro</strong><br>Programa de Pós-Graduação em Computação Aplicada (PPG-CA)<br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>E-mail:  heber.castro@usp.br</p><p><strong>Orientador do Pesquisador Responsável: Prof. Dr. Cléver Ricardo Guareis de Farias</strong><br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>Fone: (16) 3315-0564<br>E-mail: farias@ffclrp.usp.br</p><p>Para denúncias e/ou reclamações referentes aos aspectos éticos da pesquisa, entrar em contato com:</p><p><strong>Comitê de Ética em Pesquisa (CEP) da FFCLRP USP</strong><br>Av. Bandeirantes, 3900 - Bloco 23 - Casa 37 - 14040-901 - Ribeirão Preto (SP)<br>Fone: (16) 3315-4811 / Fax: (16) 3633-2660<br>E-mail: coetp@ffclrp.usp.br / homepage: http://www.ffclrp.usp.br</p></div><label class="checkbox-label"><input type="checkbox" id="consent-check" name="consent-check"> Li o Termo de Consentimento acima e concordo em participar da pesquisa.</label></div><button type="button" id="proceed-btn">Prosseguir para a Pesquisa</button>`;
             document.getElementById('proceed-btn').addEventListener('click', proceedToProfile);
         }
 
@@ -189,7 +141,8 @@
         }
 
         function proceedToProfile() {
-            if (!document.getElementById('user-name').value.trim() || !document.getElementById('user-email').value.trim()) { showAlert('Por favor, preencha seu nome e e-mail.'); return; }
+            if (!document.getElementById('user-name').value.trim()) { showAlert('Por favor, preencha seu nome e e-mail.'); return; }
+            if (!document.getElementById('user-email').value.trim()) { showAlert('Por favor, preencha seu e-mail.'); return; }
             if (!document.getElementById('age-check').checked) { showAlert('A participação é restrita a maiores de 18 anos.'); return; }
             if (!document.getElementById('consent-check').checked) { showAlert('É necessário concordar com o Termo para participar.'); return; }
             gateSection.style.display = 'none';
@@ -260,37 +213,39 @@
             
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                body: JSON.stringify(finalData),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(finalData)
             })
             .then(response => {
-                // O Google Apps Script redireciona em caso de sucesso, o que causa um erro de CORS no navegador
-                // que não podemos capturar. Por isso, aqui tratamos a ausência de um erro de rede como sucesso.
-                // Esta é uma limitação da forma como o 'fetch' interage com o redirecionamento 302 do Apps Script.
-                if (response.type === 'opaque' || response.ok) {
+                if (response.redirected) { 
                     return { result: 'success' };
                 }
-                // Se a resposta NÃO for 'opaque', algo mais sério deu errado e podemos tentar ler
-                return response.json().then(errorData => {
-                    throw new Error(errorData.error || 'Erro desconhecido na resposta do servidor.');
-                });
+                if (!response.ok) {
+                    throw new Error(`A resposta da rede não foi 'ok', status: ${response.status}`);
+                }
+                return response.json();
             })
             .then(data => {
                  if (data.result === 'success') {
                     showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
                     researchForm.reset();
-                    // Limpa o conteúdo dinâmico para reiniciar
+                    gateSection.innerHTML = '';
                     profileSection.innerHTML = '';
                     taskSection.innerHTML = '';
-                    setupGateSection(); // Remonta a seção inicial
-                    setupProfileSection(); // Remonta a seção de perfil (escondida)
+                    setupGateSection();
+                    setupProfileSection();
                     gateSection.style.display = 'block';
                     profileSection.style.display = 'none';
                     taskSection.style.display = 'none';
+                } else {
+                    throw new Error(data.error || 'Erro desconhecido na resposta.');
                 }
             })
             .catch(error => {
                 console.error('Erro ao enviar dados:', error);
-                showAlert('Ocorreu um erro ao enviar suas respostas. Por favor, verifique sua conexão e tente novamente. Detalhes: ' + error.message, 'Erro no Envio');
+                showAlert('Ocorreu um erro ao enviar suas respostas. Tente novamente. Detalhes: ' + error.message, 'Erro no Envio');
             })
             .finally(() => {
                 if(submitButton) {
