@@ -44,6 +44,14 @@
         .modal-footer { padding: 15px 20px; border-top: 1px solid var(--border-color); }
         .modal-footer button { display: inline-block; width: auto; padding: 10px 30px; margin: 0; background-color: var(--primary-color); }
         @keyframes modal-fade-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        /* Estilos para o novo sistema de input */
+        .question-input-area { display: flex; gap: 10px; margin-bottom: 15px; }
+        .question-input-area input { flex-grow: 1; }
+        .question-input-area button { width: auto; margin-top: 0; padding: 12px 20px; }
+        #question-counter-status { text-align: center; font-weight: 600; color: var(--primary-color); margin-bottom: 20px; }
+        #user-questions-list-container { border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; min-height: 100px; background-color: #fafafa; }
+        #user-questions-list-container h4 { margin-top: 0; }
+        #user-questions-list { padding-left: 20px; }
     </style>
 </head>
 <body>
@@ -71,30 +79,16 @@
             <h1>Plataforma de Pesquisa</h1>
             
             <form id="research-form" novalidate>
-                
-                <!-- ETAPA 1: VALIDAÇÃO E CONSENTIMENTO -->
-                <section id="gate-section">
-                    <!-- Conteúdo será injetado pelo JavaScript -->
-                </section>
-
-                <!-- ETAPA 2: PERFIL DO PARTICIPANTE (ESCONDIDA) -->
-                <section id="profile-section">
-                     <!-- Conteúdo é injetado dinamicamente pelo JS -->
-                </section>
-                
-                <!-- ETAPA 3: TAREFA PRINCIPAL (ESCONDIDA) -->
-                <section id="task-section">
-                    <!-- Conteúdo será gerado dinamicamente aqui -->
-                </section>
+                <section id="gate-section"></section>
+                <section id="profile-section"></section>
+                <section id="task-section"></section>
             </form>
         </main>
     </div>
 
     
     <script>
-        // --- INÍCIO DO CÓDIGO JAVASCRIPT COMPLETO ---
-
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqtlLVnTnf_gbTXpHNGDO955M-YfWgBPq-aLJuJ3kvx2xwWGuR_1_VP4y3NIIKEVKb/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMtzQG1KmETc2qQTqYiyoQiYMPchnR6n74JYtQBPAgizsPrVTAORfhMpNxdBzbMtshxg/exec';
 
         // --- LÓGICA DO MODAL DE ALERTA ---
         function showAlert(message, title = 'Alerta') {
@@ -112,7 +106,22 @@
         const profileSection = document.getElementById('profile-section');
         const taskSection = document.getElementById('task-section');
         const researchForm = document.getElementById('research-form');
-        const referenceQuestions = [ "Qual foi o preço de fechamento da PETROBRAS no dia 10/06/2025?", "Preço de abertura para a ação SUZB3 em 06/06/2025.", "Qual o código de negociação da empresa Petrobras?", "Qual o volume negociado para o setor de Materiais Básicos no dia 13/06/2025?", "Qual o valor total de negócios do setor de bancos no dia 03/06/2025?", "Qual foi a quantidade de ações da JBS negociadas em 03/06/2025?", "Qual foi o preço mínimo da PETR4 em 11/06/2025?", "Qual foi o valor mínimo para a ação ITSA4 em 16/06/2025?", "Me diga o preço máximo da companhia Ambev no dia 20/06/2025.", "Mostre as ações do setor de elétrico.", "Qual o intervalo intradiário absoluto da GOAU4 no pregão de 04/06/2025?", "Top 2 ações com maior alta percentual do setor de Papel e Celulose em 16/06/2025.", "Quais as 3 ações do setor elétrico com maior baixa percentual em 17/06/2025?", "Liste as 2 ações de menor variação percentual no dia 10/06/2025.", "Qual foi a ação de maior variação percentual em 12/06/2025?", "Mostre os 3 papéis com a maior baixa percentual do dia 23/06/2025.", "Liste as cinco ações com a menor variação percentual do setor de Transporte em 20/06/2025.", "Qual foi a variação absoluta da ação do IFNC com a maior alta percentual em 10/06/2025?", "Qual o ticker da ação do setor Financeiro com o maior intervalo intradiário percentual em 30/06/2025?", "Da ação do IAGRO com a maior alta percentual em 16/06/2025, qual foi sua variação intradiária absoluta?" ];
+        
+        // --- INÍCIO DA SEÇÃO MODIFICADA ---
+        const referenceQuestions = [
+            "Qual foi o preço de fechamento da ação da Braskem em 20/06/2025?",
+            "Qual foi o preço de abertura da WEGE3 em 12/06/2025?",
+            "Qual o código de negociação da ação da Suzano?",
+            "Quais são as ações do setor de transporte?",
+            "Qual foi o volume negociado nas ações do setor de siderurgia em 11/06/2025?",
+            "Qual foi o preço máximo da ação preferencial da Usiminas em 25/06/2025?",
+            "Qual foi a variação intradiária absoluta da ação da Vale no pregão de 26/06/2025?",
+            "Quais as cinco ações de maior percentual de alta no pregão de 13/06/2025?",
+            "Qual a ação do setor de papel e celulose com a maior alta percentual em 24/06/2025?",
+            "Qual foi o volume da ação com a maior alta percentual do pregão de 27/06/2025?",
+            "Qual foi o intervalo intradiário percentual da ação com o maior percentual de baixa entre as ações do IFNC no pregão de 20/06/2025?"
+        ];
+        // --- FIM DA SEÇÃO MODIFICADA ---
         
         function shuffleArray(array) { 
             for (let i = array.length - 1; i > 0; i--) { 
@@ -122,7 +131,6 @@
             return array; 
         }
 
-        // --- FUNÇÕES DE CONTROLE DE FLUXO ---
         document.addEventListener('DOMContentLoaded', () => {
             setupGateSection();
             setupProfileSection();
@@ -130,12 +138,23 @@
         });
 
         function setupGateSection() {
-            gateSection.innerHTML = `<h2>Consentimento para Participação</h2><p class="section-intro">Por favor, preencha as informações abaixo e leia o Termo de Consentimento para continuar.</p><div class="question-block"><p>Seu Nome Completo:</p><input type="text" id="user-name" name="user-name" required></div><div class="question-block"><p>Seu E-mail:</p><input type="email" id="user-email" name="user-email" required></div><div class="question-block"><p>Verificação de Idade:</p><label class="checkbox-label"><input type="checkbox" id="age-check" name="age-check"> Declaro que sou maior de 18 anos.</label></div><div class="question-block"><p class="consent-title">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</p><div class="consent-text"><p><strong>PROJETO: Geração de consultas SPARQL a partir de linguagem natural</strong></p><p>Você está sendo convidado(a) a participar do projeto de pesquisa acima citado. O documento abaixo contém todas as informações necessárias sobre a pesquisa que estamos fazendo. Sua colaboração nesse estudo será de muita importância para nós.</p><p>Eu, ______________________________________________, abaixo assinado, concordo de livre e espontânea vontade em participar do estudo “Geração de consultas SPARQL a partir de linguagem natural”, e esclareço que obtive todas as informações.</p><p>Estou ciente de que:</p><ol><li>O estudo faz parte de um projeto de mestrado do Programa de Pós-Graduação em Computação Aplicada (PPG-CA) da Faculdade de Filosofia, Ciências e Letras de Ribeirão Preto (FFCLRP) da Universidade de São Paulo e tem por objetivo propor uma abordagem para a tradução de perguntas realizadas em linguagem natural (português) para consultas  SPARQL, bem como desenvolver uma ferramenta de suporte (Natural2SPARQL) para essa transformação.</li><li>Como parte da metodologia do projeto, minha participação consistirá em duas etapas principais. Primeiramente, deverei responder a um breve questionário para avaliar meu conhecimento prévio sobre o mercado de ações da bolsa de valores brasileira (B3). Na sequência, serei apresentado(a) a um conjunto de  exemplos de perguntas e minha tarefa será elaborar 20 novas perguntas em linguagem natural (português) sobre o mercado de ações, as quais poderão levar em consideração os exemplos apresentados ou não. As perguntas que eu criar serão utilizadas pela equipe de pesquisa para avaliar a capacidade de tradução da abordagem/ferramenta Natural2SPARQL.</li><li>A pesquisa não envolve a coleta de dados pessoais dos participantes, apenas informações básicas sobre o conhecimento do participante do funcionamento do mercado de ações/B3 e o conjunto de perguntas propostas. Os resultados obtidos durante essa pesquisa serão mantidos em sigilo. Somente pessoas que fazem parte da equipe da pesquisa poderão ter acesso aos seus registros para acompanhar a pesquisa e analisar os dados obtidos, de acordo com as normas brasileiras que os protegem. Os resultados obtidos somente poderão ser divulgados de forma anônima em publicações científicas produzidas como decorrência do projeto, incluindo a própria dissertação de mestrado tema do projeto.</li><li>Caso desejar, poderei tomar conhecimento dos resultados ao final desta pesquisa.</li></ol><p>O ato de preencher o questionário contido neste formulário indica minha concordância na participação na pesquisa.</p><hr><p>No caso de haver dúvidas sobre esse estudo, você poderá consultar:</p><p><strong>Pesquisador Responsável: Heber Gustavo Xavier de Castro</strong><br>Programa de Pós-Graduação em Computação Aplicada (PPG-CA)<br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>E-mail:  heber.castro@usp.br</p><p><strong>Orientador do Pesquisador Responsável: Prof. Dr. Cléver Ricardo Guareis de Farias</strong><br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>Fone: (16) 3315-0564<br>E-mail: farias@ffclrp.usp.br</p><p>Para denúncias e/ou reclamações referentes aos aspectos éticos da pesquisa, entrar em contato com:</p><p><strong>Comitê de Ética em Pesquisa (CEP) da FFCLRP USP</strong><br>Av. Bandeirantes, 3900 - Bloco 23 - Casa 37 - 14040-901 - Ribeirão Preto (SP)<br>Fone: (16) 3315-4811 / Fax: (16) 3633-2660<br>E-mail: coetp@ffclrp.usp.br / homepage: http://www.ffclrp.usp.br</p></div><label class="checkbox-label"><input type="checkbox" id="consent-check" name="consent-check"> Li o Termo de Consentimento acima e concordo em participar da pesquisa.</label></div><button type="button" id="proceed-btn">Prosseguir para a Pesquisa</button>`;
+            gateSection.innerHTML = `<h2>Consentimento para Participação</h2><p class="section-intro">Por favor, preencha as informações abaixo e leia o Termo de Consentimento para continuar.</p><div class="question-block"><p>Seu Nome Completo:</p><input type="text" id="user-name" name="user-name" required></div><div class="question-block"><p>Seu E-mail:</p><input type="email" id="user-email" name="user-email" required></div><div class="question-block"><p>Verificação de Idade:</p><label class="checkbox-label"><input type="checkbox" id="age-check" name="age-check"> Declaro que sou maior de 18 anos.</label></div><div class="question-block"><p class="consent-title">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</p><div class="consent-text"><p><strong>PROJETO: Geração de consultas SPARQL a partir de linguagem natural</strong></p><p>Você está sendo convidado(a) a participar do projeto de pesquisa acima citado. O documento abaixo contém todas as informações necessárias sobre a pesquisa que estamos fazendo. Sua colaboração nesse estudo será de muita importância para nós.</p><p>Eu, ______________________________________________, abaixo assinado, concordo de livre e espontânea vontade em participar do estudo “Geração de consultas SPARQL a partir de linguagem natural”, e esclareço que obtive todas as informações.</p><p>Estou ciente de que:</p><ol><li>O estudo faz parte de um projeto de mestrado do Programa de Pós-Graduação em Computação Aplicada (PPG-CA) da Faculdade de Filosofia, Ciências e Letras de Ribeirão Preto (FFCLRP) da Universidade de São Paulo e tem por objetivo propor uma abordagem para a tradução de perguntas realizadas em linguagem natural (português) para consultas SPARQL, bem como desenvolver uma ferramenta de suporte (Natural2SPARQL) para essa transformação.</li><li>Como parte da metodologia do projeto, minha participação consistirá em duas etapas principais. Na primeira, deverei responder a um breve questionário para avaliar meu conhecimento prévio sobre o mercado de ações da bolsa de valores brasileira, a B3.<br><br>Posteriormente, minha tarefa será elaborar um conjunto de 10 a 20 perguntas em linguagem natural (português) estritamente relacionadas ao domínio de negociação de ações na B3, com foco específico no período de junho de 2025. É crucial que as questões se atenham a dados quantitativos e eventos observáveis diretamente no pregão. Os temas devem girar em torno dos índices de negociação da B3 (como Ibovespa e IFIX), das empresas listadas e seus respectivos tickers de negociação (ex: PETR4, VALE3) ou de setores de atuação (ex: setor bancário, setor de varejo). As perguntas devem focar em métricas como preços de abertura, fechamento, máxima e mínima do dia, volume financeiro negociado ou variações percentuais.<br><br>Desta forma, não deverão ser formuladas perguntas que abordem outros aspectos do universo financeiro ou corporativo das empresas listadas. Exemplos de tópicos a serem evitados incluem: análise de fundamentos da empresa, como balanços patrimoniais e demonstrativos de resultados (DRE); governança corporativa e composição acionária; políticas de distribuição de proventos, como dividendos e juros sobre capital próprio (JCP); recomendações de analistas e seus preços-alvo; ou notícias e fatos relevantes que não estejam diretamente ligados a uma transação específica no período delimitado.<br><br>Para auxiliar na formulação destas questões, um conjunto de exemplos será apresentado com base no meu nível de conhecimento prévio. As perguntas que eu criar poderão ou não se basear nesses exemplos, mas deverão respeitar rigorosamente o domínio estabelecido. Finalmente, as questões elaboradas serão utilizadas pela equipe de pesquisa para avaliar a capacidade de tradução da abordagem/ferramenta Natural2SPARQL.</li><li>A pesquisa não envolve a coleta de dados pessoais dos participantes, apenas informações básicas sobre o conhecimento do participante do funcionamento do mercado de ações/B3 e o conjunto de perguntas propostas. Os resultados obtidos durante essa pesquisa serão mantidos em sigilo. Somente pessoas que fazem parte da equipe da pesquisa poderão ter acesso aos seus registros para acompanhar a pesquisa e analisar os dados obtidos, de acordo com as normas brasileiras que os protegem. Os resultados obtidos somente poderão ser divulgados de forma anônima em publicações científicas produzidas como decorrência do projeto, incluindo a própria dissertação de mestrado tema do projeto.</li><li>Caso desejar, poderei tomar conhecimento dos resultados ao final desta pesquisa.</li></ol><p>Ribeirão Preto, ......... de ..................... de 2025</p><hr><p>No caso de haver dúvidas sobre esse estudo, você poderá consultar:</p><p><strong>Pesquisador Responsável: Heber Gustavo Xavier de Castro</strong><br>Programa de Pós-Graduação em Computação Aplicada (PPG-CA)<br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>E-mail:  heber.castro@usp.br</p><p><strong>Orientador do Pesquisador Responsável: Prof. Dr. Cléver Ricardo Guareis de Farias</strong><br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>Fone: (16) 3315-0564<br>E-mail: farias@ffclrp.usp.br</p><p>Para denúncias e/ou reclamações referentes aos aspectos éticos da pesquisa, entrar em contato com:</p><p><strong>Comitê de Ética em Pesquisa (CEP) da FFCLRP USP</strong><br>Av. Bandeirantes, 3900 - Bloco 23 - Casa 37 - 14040-901 - Ribeirão Preto (SP)<br>Fone: (16) 3315-4811 / Fax: (16) 3633-2660<br>E-mail: coetp@ffclrp.usp.br / homepage: http://www.ffclrp.usp.br</p></div><label class="checkbox-label"><input type="checkbox" id="consent-check" name="consent-check"> Concordo em participar. O ato de preencher o questionário contido neste formulário indica minha concordância na participação na pesquisa.</label></div><button type="button" id="proceed-btn">Prosseguir para a Pesquisa</button>`;
             document.getElementById('proceed-btn').addEventListener('click', proceedToProfile);
         }
 
         function setupProfileSection() {
-             profileSection.innerHTML = `<h2>Perfil do Participante</h2><p class="section-intro">Para que nossa pesquisa seja bem-sucedida, é fundamental entender o seu perfil.<br><strong>Lembre-se:</strong> o objetivo não é testá-lo(a), mas sim nos ajudar a analisar os dados de forma anônima.</p><div class="question-block"><p>1. Em uma escala de 1 a 3, como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p><div class="options"><label><input type="radio" name="knowledge" value="1" required> 1 - Nenhum/pouco conhecimento</label><label><input type="radio" name="knowledge" value="2"> 2 - Conhecimento intermediário</label><label><input type="radio" name="knowledge" value="3"> 3 - Conhecimento avançado</label></div></div><div class="question-block"><p>2. Você já investiu ou investe em ações diretamente na bolsa de valores?</p><div class="options"><label><input type="radio" name="experience" value="1" required> Não, e não tenho interesse ou planos de investir.</label><label><input type="radio" name="experience" value="2"> Não, mas pretendo investir no futuro.</label><label><input type="radio" name="experience" value="3"> Já investi no passado, mas não invisto mais.</label><label><input type="radio" name="experience" value="4"> Sim, invisto atualmente.</label></div></div><div class="question-block"><p>3. Quão familiar você é com os seguintes termos do mercado de ações?</p><table class="matrix-table"><thead><tr><th></th><th>Nunca ouvi falar</th><th>Já ouvi falar, mas não sei o que é</th><th>Sei o que significa</th></tr></thead><tbody><tr><td>Ticker (ex: PETR4)</td><td><input type="radio" name="term_ticker" value="1" required></td><td><input type="radio" name="term_ticker" value="2"></td><td><input type="radio" name="term_ticker" value="3"></td></tr><tr><td>Índice Ibovespa (IBOV)</td><td><input type="radio" name="term_ibov" value="1" required></td><td><input type="radio" name="term_ibov" value="2"></td><td><input type="radio" name="term_ibov" value="3"></td></tr><tr><td>Ação Preferencial, Ordinária e UNIT</td><td><input type="radio" name="term_types" value="1" required></td><td><input type="radio" name="term_types" value="2"></td><td><input type="radio" name="term_types" value="3"></td></tr><tr><td>Variação Intradiária Absoluta</td><td><input type="radio" name="term_var_abs" value="1" required></td><td><input type="radio" name="term_var_abs" value="2"></td><td><input type="radio" name="term_var_abs" value="3"></td></tr><tr><td>Variação Intradiária Percentual</td><td><input type="radio" name="term_var_per" value="1" required></td><td><input type="radio" name="term_var_per" value="2"></td><td><input type="radio" name="term_var_per" value="3"></td></tr><tr><td>Intervalo Intradiário Absoluto</td><td><input type="radio" name="term_int_abs" value="1" required></td><td><input type="radio" name="term_int_abs" value="2"></td><td><input type="radio" name="term_int_abs" value="3"></td></tr><tr><td>Intervalo Intradiário Percentual</td><td><input type="radio" name="term_int_per" value="1" required></td><td><input type="radio" name="term_int_per" value="2"></td><td><input type="radio" name="term_int_per" value="3"></td></tr></tbody></table></div><button type="button" id="start-task-btn">Iniciar Tarefa</button>`;
+             profileSection.innerHTML = `
+                <h2>Perfil do Participante</h2>
+                <p class="section-intro">Para que nossa pesquisa seja bem-sucedida, é fundamental entender o seu perfil.<br><strong>Lembre-se:</strong> o objetivo não é testá-lo(a), mas sim nos ajudar a analisar os dados de forma anônima.</p>
+                <div class="question-block">
+                    <p>1. Em uma escala de 1 a 3, como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p>
+                    <div class="options">
+                        <label><input type="radio" name="knowledge" value="1" required> 1 - Nenhum/pouco conhecimento</label>
+                        <label><input type="radio" name="knowledge" value="2"> 2 - Conhecimento intermediário</label>
+                        <label><input type="radio" name="knowledge" value="3"> 3 - Conhecimento avançado</label>
+                    </div>
+                </div>
+                <button type="button" id="start-task-btn">Iniciar Tarefa</button>`;
              document.getElementById('start-task-btn').addEventListener('click', startTask);
         }
 
@@ -148,45 +167,115 @@
             profileSection.style.display = 'block';
         }
 
+        let questionCount = 0;
+
         function startTask() {
             const knowledgeInput = profileSection.querySelector('input[name="knowledge"]:checked');
-            const experienceInput = profileSection.querySelector('input[name="experience"]:checked');
-            const termGroups = ['term_ticker', 'term_ibov', 'term_types', 'term_var_abs', 'term_var_per', 'term_int_abs', 'term_int_per'];
-            let allTermsAnswered = termGroups.every(group => profileSection.querySelector(`input[name="${group}"]:checked`));
 
-            if (!knowledgeInput || !experienceInput || !allTermsAnswered) {
-                showAlert('Por favor, responda a todas as perguntas do perfil para continuar.');
+            if (!knowledgeInput) {
+                showAlert('Por favor, responda a pergunta do perfil para continuar.');
                 return;
             }
 
             const knowledgeLevel = parseInt(knowledgeInput.value);
             let numExamplesToShow = 0, levelDescription = "";
-            if (knowledgeLevel === 1) { numExamplesToShow = 6; levelDescription = "Iniciante"; } 
-            else if (knowledgeLevel === 2) { numExamplesToShow = 8; levelDescription = "Intermediário"; } 
-            else { numExamplesToShow = 10; levelDescription = "Avançado"; }
+            if (knowledgeLevel === 1) { numExamplesToShow = 4; levelDescription = "Iniciante"; } 
+            else if (knowledgeLevel === 2) { numExamplesToShow = 6; levelDescription = "Intermediário"; } 
+            else { numExamplesToShow = 8; levelDescription = "Avançado"; }
             
             const shuffledQuestions = shuffleArray([...referenceQuestions]);
-            const selectedExamples = shuffledQuestions.slice(0, numExamplesToShow);
+            // Garante que não tentará mostrar mais exemplos do que existem
+            const finalNumExamples = Math.min(numExamplesToShow, shuffledQuestions.length);
+            const selectedExamples = shuffledQuestions.slice(0, finalNumExamples);
 
-            taskSection.innerHTML = `<h2>Tarefa Principal (Nível ${levelDescription})</h2><div id="example-questions-container"><h3>A seguir, apresentamos ${numExamplesToShow} exemplos de perguntas. Use-os como inspiração para criar suas 20 novas perguntas.</h3><ol id="example-questions-list"></ol></div><div class="question-block"><p>Por favor, elabore suas 20 novas perguntas no campo abaixo:</p><textarea id="user-questions" name="user-questions" placeholder="Digite suas 20 perguntas aqui, uma por linha..." required></textarea></div><button type="submit">Enviar Respostas</button>`;
+            taskSection.innerHTML = `
+                <h2>Tarefa Principal (Nível ${levelDescription})</h2>
+                <div id="example-questions-container">
+                    <h3>A seguir, apresentamos ${finalNumExamples} exemplos de perguntas. Use-os como inspiração.</h3>
+                    <ol id="example-questions-list"></ol>
+                </div>
+                <div class="question-block">
+                    <p>Por favor, elabore de 10 a 20 perguntas, uma de cada vez:</p>
+                    <div class="question-input-area">
+                        <input type="text" id="new-question-input" placeholder="Digite uma pergunta aqui...">
+                        <button type="button" id="add-question-btn">Adicionar Pergunta</button>
+                    </div>
+                    <p id="question-counter-status"></p>
+                </div>
+                <div id="user-questions-list-container">
+                    <h4>Suas Perguntas Adicionadas:</h4>
+                    <ol id="user-questions-list"></ol>
+                </div>
+                <button type="submit" id="final-submit-btn" disabled>Enviar Respostas</button>
+            `;
             
             const exampleList = taskSection.querySelector('#example-questions-list');
             selectedExamples.forEach(q => { const li = document.createElement('li'); li.textContent = q; exampleList.appendChild(li); });
+            
+            document.getElementById('add-question-btn').addEventListener('click', addQuestionToList);
+            
+            questionCount = 0;
+            updateQuestionUI();
 
             profileSection.style.display = 'none';
             taskSection.style.display = 'block';
         }
 
-        // --- INÍCIO DA VERSÃO CORRIGIDA DA FUNÇÃO ---
-        function submitForm(event) {
-            event.preventDefault();
-            const submitButton = researchForm.querySelector('button[type="submit"]');
-            const userGeneratedQuestions = document.getElementById('user-questions').value;
+        function addQuestionToList() {
+            const input = document.getElementById('new-question-input');
+            const questionText = input.value.trim();
 
-            if (!userGeneratedQuestions.trim()) {
-                showAlert('Por favor, elabore suas 20 perguntas antes de enviar.');
+            if (!questionText) {
+                showAlert('Por favor, digite uma pergunta antes de adicionar.');
                 return;
             }
+
+            const list = document.getElementById('user-questions-list');
+            const li = document.createElement('li');
+            li.textContent = questionText;
+            list.appendChild(li);
+
+            input.value = '';
+            input.focus();
+            
+            questionCount++;
+            updateQuestionUI();
+        }
+        
+        function updateQuestionUI() {
+            const statusEl = document.getElementById('question-counter-status');
+            const finalSubmitBtn = document.getElementById('final-submit-btn');
+            const addQuestionBtn = document.getElementById('add-question-btn');
+            const newQuestionInput = document.getElementById('new-question-input');
+
+            if (questionCount < 10) {
+                statusEl.textContent = `${questionCount} de 20 perguntas adicionadas. (Mínimo de 10 para enviar)`;
+                finalSubmitBtn.disabled = true;
+            } else if (questionCount >= 10 && questionCount < 20) {
+                statusEl.textContent = `${questionCount} de 20 perguntas adicionadas. Você já pode enviar ou adicionar mais.`;
+                finalSubmitBtn.disabled = false;
+            } else if (questionCount >= 20) {
+                statusEl.textContent = `Máximo de 20 perguntas atingido. Por favor, envie suas respostas.`;
+                finalSubmitBtn.disabled = false;
+                addQuestionBtn.disabled = true;
+                newQuestionInput.disabled = true;
+                newQuestionInput.placeholder = 'Máximo de perguntas alcançado.';
+            }
+        }
+        
+        function submitForm(event) {
+            event.preventDefault();
+            
+            const questionsList = document.querySelectorAll('#user-questions-list li');
+            if (questionsList.length < 10) {
+                showAlert('Você precisa adicionar no mínimo 10 perguntas para poder enviar.');
+                return;
+            }
+
+            const userGeneratedQuestionsArray = Array.from(questionsList).map(li => li.textContent);
+            const userGeneratedQuestions = userGeneratedQuestionsArray.join('\n');
+
+            const submitButton = document.getElementById('final-submit-btn');
             if (submitButton) {
                 submitButton.disabled = true;
                 submitButton.textContent = 'Enviando...';
@@ -196,31 +285,18 @@
                 name: document.getElementById('user-name').value,
                 email: document.getElementById('user-email').value,
                 profile: {
-                    knowledge: profileSection.querySelector('input[name="knowledge"]:checked').value,
-                    experience: profileSection.querySelector('input[name="experience"]:checked').value,
-                    term_familiarity: {
-                        ticker: profileSection.querySelector('input[name="term_ticker"]:checked').value,
-                        ibov: profileSection.querySelector('input[name="term_ibov"]:checked').value,
-                        types: profileSection.querySelector('input[name="term_types"]:checked').value,
-                        var_abs: profileSection.querySelector('input[name="term_var_abs"]:checked').value,
-					    var_per: profileSection.querySelector('input[name="term_var_per"]:checked').value,
-					    int_abs: profileSection.querySelector('input[name="term_int_abs"]:checked').value,
-					    int_per: profileSection.querySelector('input[name="term_int_per"]:checked').value,
-                    }
+                    knowledge: profileSection.querySelector('input[name="knowledge"]:checked').value
                 },
                 userGeneratedQuestions: userGeneratedQuestions
             };
             
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', // Essencial para evitar o erro de CORS devido ao redirecionamento do Google
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(finalData)
             })
             .then(() => {
-                // Como não podemos ler a resposta em modo 'no-cors', assumimos o sucesso se nenhuma exceção de rede ocorrer.
                 showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
                 researchForm.reset();
                 gateSection.innerHTML = '';
@@ -233,18 +309,17 @@
                 taskSection.style.display = 'none';
             })
             .catch(error => {
-                // Este bloco agora só será acionado por falhas reais de rede (ex: sem conexão com a internet).
                 console.error('Erro ao enviar dados:', error);
                 showAlert('Ocorreu um erro ao enviar suas respostas. Verifique sua conexão e tente novamente.', 'Erro no Envio');
             })
             .finally(() => {
-                if(submitButton) {
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Enviar Respostas';
+                const finalBtn = document.getElementById('final-submit-btn');
+                if(finalBtn) {
+                    finalBtn.disabled = false;
+                    finalBtn.textContent = 'Enviar Respostas';
                 }
             });
         }
-        // --- FIM DA VERSÃO CORRIGIDA DA FUNÇÃO ---
     </script>
 </body>
 </html>
