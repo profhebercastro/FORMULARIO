@@ -94,7 +94,7 @@
     <script>
         // --- INÍCIO DO CÓDIGO JAVASCRIPT COMPLETO ---
 
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwKc9AN5vY8_Wa53LYu2K-YnocNxd8h7dEnJAfT-At8FSOmwRNfiV3KQowaIWuzXMdxrQ/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqtlLVnTnf_gbTXpHNGDO955M-YfWgBPq-aLJuJ3kvx2xwWGuR_1_VP4y3NIIKEVKb/exec';
 
         // --- LÓGICA DO MODAL DE ALERTA ---
         function showAlert(message, title = 'Alerta') {
@@ -177,6 +177,7 @@
             taskSection.style.display = 'block';
         }
 
+        // --- INÍCIO DA VERSÃO CORRIGIDA DA FUNÇÃO ---
         function submitForm(event) {
             event.preventDefault();
             const submitButton = researchForm.querySelector('button[type="submit"]');
@@ -212,39 +213,29 @@
             
             fetch(SCRIPT_URL, {
                 method: 'POST',
+                mode: 'no-cors', // Essencial para evitar o erro de CORS devido ao redirecionamento do Google
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(finalData)
             })
-            .then(response => {
-                if (response.redirected) { 
-                    return { result: 'success' };
-                }
-                if (!response.ok) {
-                    throw new Error(`A resposta da rede não foi 'ok', status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                 if (data.result === 'success') {
-                    showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
-                    researchForm.reset();
-                    gateSection.innerHTML = '';
-                    profileSection.innerHTML = '';
-                    taskSection.innerHTML = '';
-                    setupGateSection();
-                    setupProfileSection();
-                    gateSection.style.display = 'block';
-                    profileSection.style.display = 'none';
-                    taskSection.style.display = 'none';
-                } else {
-                    throw new Error(data.error || 'Erro desconhecido na resposta.');
-                }
+            .then(() => {
+                // Como não podemos ler a resposta em modo 'no-cors', assumimos o sucesso se nenhuma exceção de rede ocorrer.
+                showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
+                researchForm.reset();
+                gateSection.innerHTML = '';
+                profileSection.innerHTML = '';
+                taskSection.innerHTML = '';
+                setupGateSection();
+                setupProfileSection();
+                gateSection.style.display = 'block';
+                profileSection.style.display = 'none';
+                taskSection.style.display = 'none';
             })
             .catch(error => {
+                // Este bloco agora só será acionado por falhas reais de rede (ex: sem conexão com a internet).
                 console.error('Erro ao enviar dados:', error);
-                showAlert('Ocorreu um erro ao enviar suas respostas. Tente novamente. Detalhes: ' + error.message, 'Erro no Envio');
+                showAlert('Ocorreu um erro ao enviar suas respostas. Verifique sua conexão e tente novamente.', 'Erro no Envio');
             })
             .finally(() => {
                 if(submitButton) {
@@ -253,6 +244,7 @@
                 }
             });
         }
+        // --- FIM DA VERSÃO CORRIGIDA DA FUNÇÃO ---
     </script>
 </body>
 </html>
