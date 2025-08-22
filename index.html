@@ -77,7 +77,7 @@
 
     <script>
         // **IMPORTANTE**: Verifique se esta URL corresponde à sua ÚLTIMA implantação do Apps Script.
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynkvXlycvzxeafFfgZ5B5Vtg8NztM4z-r_LsObqZwrBpgIXZU6N7-2_wqAXytU9MU47w/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqtlLVnTnf_gbTXpHNGDO955M-YfWgBPq-aLJuJ3kvx2xwWGuR_1_VP4y3NIIKEVKb/exec';
 
         function showAlert(message, title = 'Alerta') {
             document.getElementById('modal-title').textContent = title;
@@ -133,7 +133,6 @@
              document.getElementById('start-task-btn').addEventListener('click', startTask);
         }
 
-        // --- FUNÇÃO DE VERIFICAÇÃO DE E-MAIL (ONLINE) ---
         function proceedToProfile() {
             if (!document.getElementById('user-name').value.trim()) { showAlert('Por favor, preencha seu nome.'); return; }
             const email = document.getElementById('user-email').value.trim();
@@ -239,7 +238,6 @@
             }
         }
         
-        // --- FUNÇÃO DE ENVIO DE DADOS (ONLINE) ---
         function submitForm(event) {
             event.preventDefault();
             
