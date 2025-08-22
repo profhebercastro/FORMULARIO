@@ -19,19 +19,15 @@
         .options label, .checkbox-label { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.2s ease; }
         .options label:hover, .checkbox-label:hover { background-color: #f0f3f8; }
         input[type="radio"], input[type="checkbox"] { margin-right: 12px; transform: scale(1.1); }
-        .matrix-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .matrix-table th, .matrix-table td { padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); }
-        .matrix-table th { font-weight: 600; font-size: 0.9rem; color: #555; }
-        .matrix-table td:first-child { text-align: left; font-weight: 600; }
-        input[type="text"], input[type="email"], textarea { width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 1rem; }
-        textarea { min-height: 250px; resize: vertical; }
+        input[type="text"], input[type="email"] { width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 1rem; }
         button { display: block; width: 100%; padding: 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease; margin-top: 20px; }
         button:hover { background-color: #004b8d; }
         button:disabled { background-color: #aaa; cursor: not-allowed; }
-        #profile-section, #task-section { display: none; }
-        .consent-text { max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem; text-align: justify; line-height: 1.6; }
-        .consent-text p, .consent-text li { margin-bottom: 1em; }
-        .consent-text ol { padding-left: 20px; }
+        #context-section, #profile-section, #task-section { display: none; }
+        .consent-text, .context-box { max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; text-align: justify; line-height: 1.7; }
+        .context-box h3 { text-align: center; margin-top: 0; color: var(--primary-color); }
+        .consent-text p, .consent-text li, .context-box p, .context-box li { margin-bottom: 1em; }
+        .consent-text ol, .context-box ul { padding-left: 20px; }
         #example-questions-container { background-color: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
         #example-questions-container h3 { margin-top: 0; font-size: 1.1rem; }
         #example-questions-list { padding-left: 20px; margin-top: 15px; }
@@ -44,7 +40,6 @@
         .modal-footer { padding: 15px 20px; border-top: 1px solid var(--border-color); }
         .modal-footer button { display: inline-block; width: auto; padding: 10px 30px; margin: 0; background-color: var(--primary-color); }
         @keyframes modal-fade-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        /* Estilos para o novo sistema de input */
         .question-input-area { display: flex; gap: 10px; margin-bottom: 15px; }
         .question-input-area input { flex-grow: 1; }
         .question-input-area button { width: auto; margin-top: 0; padding: 12px 20px; }
@@ -57,15 +52,9 @@
 <body>
     <div id="custom-alert-overlay" class="custom-modal-overlay">
         <div class="custom-modal">
-            <div class="modal-header">
-                <h3 id="modal-title">Alerta</h3>
-            </div>
-            <div class="modal-body">
-                <p id="modal-message">Mensagem de exemplo.</p>
-            </div>
-            <div class="modal-footer">
-                <button id="modal-close-btn">OK</button>
-            </div>
+            <div class="modal-header"><h3 id="modal-title">Alerta</h3></div>
+            <div class="modal-body"><p id="modal-message">Mensagem de exemplo.</p></div>
+            <div class="modal-footer"><button id="modal-close-btn">OK</button></div>
         </div>
     </div>
 
@@ -77,104 +66,74 @@
 		
         <main>
             <h1>Plataforma de Pesquisa</h1>
-            
             <form id="research-form" novalidate>
                 <section id="gate-section"></section>
+                <section id="context-section"></section>
                 <section id="profile-section"></section>
                 <section id="task-section"></section>
             </form>
         </main>
     </div>
 
-    
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwuGFa9rB2Xw_bMD0Yq8DAepx9rItd_MDTZ1mOJjtfi-yA-chNnJW-UUFigNM3e5Ou29Q/exec';
+        // **IMPORTANTE**: Verifique se esta URL corresponde à sua ÚLTIMA implantação do Apps Script.
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqtlLVnTnf_gbTXpHNGDO955M-YfWgBPq-aLJuJ3kvx2xwWGuR_1_VP4y3NIIKEVKb/exec';
 
-        // --- LÓGICA DO MODAL DE ALERTA ---
         function showAlert(message, title = 'Alerta') {
-            const overlay = document.getElementById('custom-alert-overlay');
             document.getElementById('modal-title').textContent = title;
             document.getElementById('modal-message').textContent = message;
-            if (overlay) overlay.style.display = 'flex';
+            document.getElementById('custom-alert-overlay').style.display = 'flex';
         }
-        document.getElementById('modal-close-btn').addEventListener('click', () => {
-            document.getElementById('custom-alert-overlay').style.display = 'none';
-        });
+        document.getElementById('modal-close-btn').addEventListener('click', () => { document.getElementById('custom-alert-overlay').style.display = 'none'; });
         
-        // --- ELEMENTOS GLOBAIS E DADOS ---
         const gateSection = document.getElementById('gate-section');
+        const contextSection = document.getElementById('context-section');
         const profileSection = document.getElementById('profile-section');
         const taskSection = document.getElementById('task-section');
         const researchForm = document.getElementById('research-form');
         
-        const referenceQuestions = [
-            "Qual foi o preço de fechamento da ação da Braskem em 20/06/2025?",
-            "Qual foi o preço de abertura da WEGE3 em 12/06/2025?",
-            "Qual o código de negociação da ação da Suzano?",
-            "Quais são as ações do setor de transporte?",
-            "Qual foi o volume negociado nas ações do setor de siderurgia em 11/06/2025?",
-            "Qual foi o preço máximo da ação preferencial da Usiminas em 25/06/2025?",
-            "Qual foi a variação intradiária absoluta da ação da Vale no pregão de 26/06/2025?",
-            "Quais as cinco ações de maior percentual de alta no pregão de 13/06/2025?",
-            "Qual a ação do setor de papel e celulose com a maior alta percentual em 24/06/2025?",
-            "Qual foi o volume da ação com a maior alta percentual do pregão de 27/06/2025?",
-            "Qual foi o intervalo intradiário percentual da ação com o maior percentual de baixa entre as ações do IFNC no pregão de 20/06/2025?"
-        ];
+        const simpleQuestions = ["Qual foi o preço de fechamento da ação da Vale em 18/06/2025?", "Qual foi o preço de abertura da ação da Ambev em 25/06/2025?", "Qual foi o preço máximo da ação da Localiza em 11/06/2025?", "Qual foi o preço mínimo da ação da Suzano em 13/06/2025?", "Qual foi o preço médio da ação da Braskem em 20/06/2025?", "Qual foi o preço de fechamento da WEGE3 em 27/06/2025?", "Qual foi o preço de abertura da VALE3 em 11/06/2025?", "Qual foi o preço máximo da PETR4 em 12/06/2025?", "Qual foi o preço mínimo da GGBR3 em 20/06/2025?", "Qual foi o preço médio da MGLU3 em 24/06/2025?", "Qual o código de negociação da ação da Petrobras?", "Qual o ticker da ação da Azul?", "Qual o código de negociação da ação da BTG Pactual?", "Qual o símbolo da ação da Embraer?", "Qual o código de negociação da ação da BB Seguridade?", "Qual o ticker da ação da Magazine Luiza?", "Qual o símbolo da ação da Weg?", "Qual o ticker da ação da Braskem?", "Qual o código de negociação da ação da Klabin?", "Qual o símbolo da ação da Itausa?", "Quais são as ações do setor de bancos?", "Quais são os tickers do setor de telecomunicações?", "Quais são as ações do setor de papel e celulose?", "Quais são os tickers das empresas do setor de mineração?", "Quais são as ações do setor de tecnologia da informação?", "Quais são os tickers das empresas do setor de saúde?", "Quais são as ações do setor de consumo não cíclico?", "Quais são os tickers do setor de energia elétrica?", "Quais são as ações do setor de siderurgia?", "Quais são os tickers do setor de agropecuária?", "Quais são as empresas do setor de transporte?", "Quais são as empresas do setor financeiro?", "Quais são as empresas do setor de bebidas?", "Quais são as empresas do setor de consumo cíclico?", "Quais são as empresas do setor de materiais básicos?", "Qual foi o volume negociado nas ações do setor de mineração em 20/06/2025?", "Qual foi o volume negociado no setor de saúde em 18/06/2025?", "Qual foi a soma da quantidade de negócios no setor de siderurgia em 30/06/2025?", "Qual foi o volume total das ações do setor de consumo não cíclico em 27/06/2025?", "Qual foi a soma do volume das ações do setor de telecomunicações em 13/06/2025?", "Qual foi o preço máximo da ação ordinária da Vale em 30/06/2025?", "Qual foi o preço de fechamento da ação preferencial da Braskem em 18/06/2025?", "Qual foi o preço mínimo da ação ordinária da Usiminas em 24/06/2025?", "Qual foi o preço de abertura da ação preferencial da Klabin em 25/06/2025?", "Qual foi o preço médio da ação ordinária da Petrobras em 26/06/2025?", "Qual foi o preço máximo da ação unit da Taesa em 30/06/2025?", "Qual foi o preço mínimo da ação ordinária da Embraer em 10/06/2025?", "Qual foi o preço médio da ação preferencial do Bradesco em 13/06/2025?", "Qual foi o preço de fechamento da ação ordinária da Magazine Luiza em 18/06/2025?", "Qual foi o preço de abertura da ação preferencial da Gerdau em 27/06/2025?"];
+        const intermediateQuestions = ["Qual foi a variação percentual da ação da Azul em 11/06/2025?", "Qual foi a variação em reais da ação da Localiza em 30/06/2025?", "Qual foi a variação absoluta da ação da Ambev em 25/06/2025?", "Qual foi a variação intradiária percentual da ação da Usiminas em 20/06/2025?", "Qual foi a variação intradiária absoluta da ação da Raia Drogasil em 10/06/2025?", "Qual foi a variação em reais da ação da Vale em 26/06/2025?", "Qual foi a variação percentual da ação da Embraer em 12/06/2025?", "Qual foi a variação intradiária percentual da ação da BB Seguridade em 13/06/2025?", "Qual foi a variação absoluta da ação da Weg em 24/06/2025?", "Qual foi a variação intradiária absoluta da ação da Bradesco em 27/06/2025?", "Quais as três ações de maior alta percentual em 13/06/2025?", "Quais as cinco ações de menor variação em reais no pregão de 12/06/2025?", "Quais as quatro ações com maior volume em 27/06/2025?", "Quais os dez papéis de menor variação percentual em 18/06/2025?", "Quais as duas ações de maior intervalo intradiário percentual em 30/06/2025?", "Qual a ação do setor de siderurgia com a maior alta percentual em 20/06/2025?", "Qual a ação do setor de telecomunicações com a maior queda absoluta em 25/06/2025?", "Qual a ação do setor de consumo cíclico com o maior volume em 11/06/2025?", "Qual a ação do setor de bancos com a menor variação percentual em 24/06/2025?", "Qual a ação do setor de saúde com o maior intervalo intradiário absoluto em 30/06/2025?"];
+        const complexQuestions = ["Qual foi o preço de fechamento da ação com a maior variação percentual em 12/06/2025?", "Qual foi o volume da ação com a menor variação em reais em 20/06/2025?", "Qual foi a quantidade de negócios da ação com o maior intervalo intradiário absoluto em 27/06/2025?", "Qual foi o preço médio da ação com a maior alta percentual em 18/06/2025?", "Qual foi o preço mínimo da ação com a menor variação percentual em 30/06/2025?", "Qual foi o volume da ação com a maior alta percentual entre as ações do IBOV em 20/06/2025?", "Qual foi o preço de fechamento da ação com a menor variação percentual entre as ações do IEE em 25/06/2025?", "Qual foi o intervalo intradiário percentual da ação com a maior queda em reais entre as ações do IMAT em 18/06/2025?", "Qual foi a quantidade de negócios da ação com a maior alta percentual entre as ações do IFNC em 30/06/2025?", "Qual foi o preço máximo da ação com a maior variação absoluta entre as ações do SMLL em 13/06/2025?"];
         
         function shuffleArray(array) { 
-            for (let i = array.length - 1; i > 0; i--) { 
-                const j = Math.floor(Math.random() * (i + 1)); 
-                [array[i], array[j]] = [array[j], array[i]]; 
-            } 
-            return array; 
+            for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; 
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             setupGateSection();
+            setupContextSection();
             setupProfileSection();
             researchForm.addEventListener('submit', submitForm);
         });
 
         function setupGateSection() {
-            gateSection.innerHTML = `
-                <h2>Consentimento para Participação</h2>
-                <p class="section-intro">Por favor, preencha as informações abaixo e leia o Termo de Consentimento para continuar.</p>
-                <div class="question-block">
-                    <p>Seu Nome Completo:</p>
-                    <input type="text" id="user-name" name="user-name" required>
-                </div>
-                <div class="question-block">
-                    <p>Seu E-mail:</p>
-                    <input type="email" id="user-email" name="user-email" required>
-                </div>
-                <div class="question-block">
-                    <p class="consent-title">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</p>
-                    <div class="consent-text"><p><strong>PROJETO: Geração de consultas SPARQL a partir de linguagem natural</strong></p><p>Você está sendo convidado(a) a participar do projeto de pesquisa acima citado. O documento abaixo contém todas as informações necessárias sobre a pesquisa que estamos fazendo. Sua colaboração nesse estudo será de muita importância para nós.</p><p>Eu, ______________________________________________, abaixo assinado, concordo de livre e espontânea vontade em participar do estudo “Geração de consultas SPARQL a partir de linguagem natural”, e esclareço que obtive todas as informações.</p><p>Estou ciente de que:</p><ol><li>O estudo faz parte de um projeto de mestrado do Programa de Pós-Graduação em Computação Aplicada (PPG-CA) da Faculdade de Filosofia, Ciências e Letras de Ribeirão Preto (FFCLRP) da Universidade de São Paulo e tem por objetivo propor uma abordagem para a tradução de perguntas realizadas em linguagem natural (português) para consultas SPARQL, bem como desenvolver uma ferramenta de suporte (Natural2SPARQL) para essa transformação.</li><li>Como parte da metodologia do projeto, minha participação consistirá em duas etapas principais. Na primeira, deverei responder a um breve questionário para avaliar meu conhecimento prévio sobre o mercado de ações da bolsa de valores brasileira, a B3.<br><br>Posteriormente, minha tarefa será elaborar um conjunto de 10 a 20 perguntas em linguagem natural (português) estritamente relacionadas ao domínio de negociação de ações na B3, com foco específico no período de junho de 2025. É crucial que as questões se atenham a dados quantitativos e eventos observáveis diretamente no pregão. Os temas devem girar em torno dos índices de negociação da B3 (como Ibovespa e IFIX), das empresas listadas e seus respectivos tickers de negociação (ex: PETR4, VALE3) ou de setores de atuação (ex: setor bancário, setor de varejo). As perguntas devem focar em métricas como preços de abertura, fechamento, máxima e mínima do dia, volume financeiro negociado ou variações percentuais.<br><br>Desta forma, não deverão ser formuladas perguntas que abordem outros aspectos do universo financeiro ou corporativo das empresas listadas. Exemplos de tópicos a serem evitados incluem: análise de fundamentos da empresa, como balanços patrimoniais e demonstrativos de resultados (DRE); governança corporativa e composição acionária; políticas de distribuição de proventos, como dividendos e juros sobre capital próprio (JCP); recomendações de analistas e seus preços-alvo; ou notícias e fatos relevantes que não estejam diretamente ligados a uma transação específica no período delimitado.<br><br>Para auxiliar na formulação destas questões, um conjunto de exemplos será apresentado com base no meu nível de conhecimento prévio. As perguntas que eu criar poderão ou não se basear nesses exemplos, mas deverão respeitar rigorosamente o domínio estabelecido. Finalmente, as questões elaboradas serão utilizadas pela equipe de pesquisa para avaliar a capacidade de tradução da abordagem/ferramenta Natural2SPARQL.</li><li>A pesquisa não envolve a coleta de dados pessoais dos participantes, apenas informações básicas sobre o conhecimento do participante do funcionamento do mercado de ações/B3 e o conjunto de perguntas propostas. Os resultados obtidos durante essa pesquisa serão mantidos em sigilo. Somente pessoas que fazem parte da equipe da pesquisa poderão ter acesso aos seus registros para acompanhar a pesquisa e analisar os dados obtidos, de acordo com as normas brasileiras que os protegem. Os resultados obtidos somente poderão ser divulgados de forma anônima em publicações científicas produzidas como decorrência do projeto, incluindo a própria dissertação de mestrado tema do projeto.</li><li>Caso desejar, poderei tomar conhecimento dos resultados ao final desta pesquisa.</li></ol><p>Ribeirão Preto, ......... de ..................... de 2025</p><hr><p>No caso de haver dúvidas sobre esse estudo, você poderá consultar:</p><p><strong>Pesquisador Responsável: Heber Gustavo Xavier de Castro</strong><br>Programa de Pós-Graduação em Computação Aplicada (PPG-CA)<br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>E-mail:  heber.castro@usp.br</p><p><strong>Orientador do Pesquisador Responsável: Prof. Dr. Cléver Ricardo Guareis de Farias</strong><br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>Fone: (16) 3315-0564<br>E-mail: farias@ffclrp.usp.br</p><p>Para denúncias e/ou reclamações referentes aos aspectos éticos da pesquisa, entrar em contato com:</p><p><strong>Comitê de Ética em Pesquisa (CEP) da FFCLRP USP</strong><br>Av. Bandeirantes, 3900 - Bloco 23 - Casa 37 - 14040-901 - Ribeirão Preto (SP)<br>Fone: (16) 3315-4811 / Fax: (16) 3633-2660<br>E-mail: coetp@ffclrp.usp.br / homepage: http://www.ffclrp.usp.br</p></div>
-                    <div class="question-block" style="margin-bottom: 10px;">
-                        <label class="checkbox-label"><input type="checkbox" id="age-check" name="age-check"> Declaro que sou maior de 18 anos.</label>
-                    </div>
-                    <label class="checkbox-label"><input type="checkbox" id="consent-check" name="consent-check"> Concordo em participar. O ato de preencher o questionário contido neste formulário indica minha concordância na participação na pesquisa.</label>
-                </div>
-                <button type="button" id="proceed-btn">Prosseguir para a Pesquisa</button>`;
+            gateSection.innerHTML = `<h2>Consentimento para Participação</h2><p class="section-intro">Por favor, preencha as informações abaixo e leia o Termo de Consentimento para continuar.</p><div class="question-block"><p>Seu Nome Completo:</p><input type="text" id="user-name" name="user-name" required></div><div class="question-block"><p>Seu E-mail:</p><input type="email" id="user-email" name="user-email" required></div><div class="question-block"><p class="consent-title">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</p><div class="consent-text"><p><strong>PROJETO: Geração de consultas SPARQL a partir de linguagem natural</strong></p><p>Você está sendo convidado(a) a participar do projeto de pesquisa acima citado. O documento abaixo contém todas as informações necessárias sobre a pesquisa que estamos fazendo. Sua colaboração nesse estudo será de muita importância para nós.</p><p>Eu, ______________________________________________, abaixo assinado, concordo de livre e espontânea vontade em participar do estudo “Geração de consultas SPARQL a partir de linguagem natural”, e esclareço que obtive todas as informações.</p><p>Estou ciente de que:</p><ol>
+            <li>O estudo faz parte de um projeto de mestrado do Programa de Pós-Graduação em Computação Aplicada (PPG-CA) da Faculdade de Filosofia, Ciências e Letras de Ribeirão Preto (FFCLRP) da Universidade de São Paulo e tem por objetivo propor uma abordagem para a tradução de perguntas realizadas em linguagem natural (português) para consultas SPARQL, bem como desenvolver uma ferramenta de suporte (Natural2SPARQL) para essa transformação.</li>
+            <li>Como parte da metodologia do projeto, minha participação consistirá em duas etapas principais. Na primeira, você será consultado sobre seus conhecimentos prévios sobre o mercado de ações da bolsa de valores brasileira, a B3. Logo após, será apresentado a você um conjunto de 8 exemplos de perguntas (quatro simples, três intermediárias e uma complexa) e sua tarefa será elaborar um conjunto de 10 a 20 novas perguntas em linguagem natural (português), que não sejam iguais aos exemplos, e estritamente relacionadas ao domínio de negociação de ações na B3, com foco específico no período de junho de 2025.
+            <br><br>É crucial que as questões se atenham a dados quantitativos e eventos observáveis diretamente no pregão. Os temas devem girar em torno dos índices de negociação da B3 (como Ibovespa e IFIX), das empresas listadas e seus respectivos tickers de negociação (ex: PETR4, VALE3) ou de setores de atuação (ex: setor bancário, setor de varejo). As perguntas devem focar em métricas como preços de abertura, fechamento, máxima e mínima do dia, volume financeiro negociado ou variações percentuais.
+            <br><br>Desta forma, não deverão ser formuladas perguntas que abordem outros aspectos do universo financeiro ou corporativo das empresas listadas. Exemplos de tópicos a serem evitados incluem: análise de fundamentos da empresa, como balanços patrimoniais e demonstrativos de resultados (DRE); governança corporativa e composição acionária; políticas de distribuição de proventos, como dividendos e juros sobre capital próprio (JCP); recomendações de analistas e seus preços-alvo; ou notícias e fatos relevantes que não estejam diretamente ligados a uma transação específica no período delimitado.
+            <br><br>Finalmente, as questões elaboradas serão utilizadas pela equipe de pesquisa para avaliar a capacidade de tradução da abordagem/ferramenta Natural2SPARQL.</li>
+            <li>A pesquisa não envolve a coleta de dados pessoais dos participantes, apenas informações básicas sobre o conhecimento do participante do funcionamento do mercado de ações/B3 e o conjunto de perguntas propostas. Os resultados obtidos durante essa pesquisa serão mantidos em sigilo. Somente pessoas que fazem parte da equipe da pesquisa poderão ter acesso aos seus registros para acompanhar a pesquisa e analisar os dados obtidos, de acordo com as normas brasileiras que os protegem. Os resultados obtidos somente poderão ser divulgados de forma anônima em publicações científicas produzidas como decorrência do projeto, incluindo a própria dissertação de mestrado tema do projeto.</li>
+            <li>Caso desejar, poderei tomar conhecimento dos resultados ao final desta pesquisa.</li>
+            </ol><p>Ribeirão Preto, ......... de ..................... de 2025</p><hr><p>No caso de haver dúvidas sobre esse estudo, você poderá consultar:</p><p><strong>Pesquisador Responsável: Heber Gustavo Xavier de Castro</strong><br>Programa de Pós-Graduação em Computação Aplicada (PPG-CA)<br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>E-mail:  heber.castro@usp.br</p><p><strong>Orientador do Pesquisador Responsável: Prof. Dr. Cléver Ricardo Guareis de Farias</strong><br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>Fone: (16) 3315-0564<br>E-mail: farias@ffclrp.usp.br</p><p>Para denúncias e/ou reclamações referentes aos aspectos éticos da pesquisa, entrar em contato com:</p><p><strong>Comitê de Ética em Pesquisa (CEP) da FFCLRP USP</strong><br>Av. Bandeirantes, 3900 - Bloco 23 - Casa 37 - 14040-901 - Ribeirão Preto (SP)<br>Fone: (16) 3315-4811 / Fax: (16) 3633-2660<br>E-mail: coetp@ffclrp.usp.br / homepage: http://www.ffclrp.usp.br</p></div><div class="question-block" style="margin-bottom: 10px;"><label class="checkbox-label"><input type="checkbox" id="age-check" name="age-check"> Declaro que sou maior de 18 anos.</label></div><label class="checkbox-label"><input type="checkbox" id="consent-check" name="consent-check"> Concordo em participar. O ato de preencher o questionário contido neste formulário indica minha concordância na participação na pesquisa.</label></div><button type="button" id="proceed-btn">Prosseguir para a Pesquisa</button>`;
             document.getElementById('proceed-btn').addEventListener('click', proceedToProfile);
         }
 
+        function setupContextSection() {
+            contextSection.innerHTML = `<h2 class="sr-only" style="display:none;">Contexto da Pesquisa</h2><div class="context-box"><h3>Sobre os Dados Utilizados</h3><p>Obrigado por sua colaboração! O objetivo desta pesquisa é testar uma ferramenta que traduz perguntas em português para uma linguagem de consulta de dados chamada SPARQL. Para isso, criamos uma <strong>base de dados simulada, mas realista, sobre o mercado de ações brasileiro (B3)</strong>, focada exclusivamente nas negociações do <strong>mês de junho de 2025</strong>.</p><p>Sua tarefa será formular perguntas que poderiam ser respondidas utilizando <strong>APENAS</strong> os seguintes tipos de informação:</p><ul><li><strong>Métricas Diárias de Ações:</strong> Preços de abertura, fechamento, máximo e mínimo, além do volume financeiro negociado para cada ação em um determinado dia.</li><li><strong>Informações das Empresas:</strong> Nomes de empresas (ex: Vale, Petrobras) e seus códigos de negociação (tickers, ex: VALE3, PETR4).</li><li><strong>Categorias de Mercado:</strong> Setores de atuação (ex: Siderurgia, Bancos, Transporte) e os principais Índices da B3 (ex: Ibovespa - IBOV, Financeiro - IFNC, Materiais Básicos - IMAT).</li><li><strong>Tipos de Ações:</strong> Diferenciação entre ações Ordinárias (ON), Preferenciais (PN) e Units.</li></ul><p><strong>É muito importante que suas perguntas se limitem a este universo.</strong> Por favor, <strong>EVITE</strong> perguntas sobre tópicos que <strong>NÃO</strong> estão em nossa base de dados, como:</p><ul><li>Análises financeiras (balanços, DRE, lucros).</li><li>Governança corporativa ou acionistas.</li><li>Dividendos, JCP ou outros proventos.</li><li>Recomendações de analistas ou notícias de mercado.</li></ul></div><button type="button" id="proceed-to-profile-btn">Entendido, ir para o Perfil</button>`;
+            document.getElementById('proceed-to-profile-btn').addEventListener('click', () => {
+                contextSection.style.display = 'none';
+                profileSection.style.display = 'block';
+            });
+        }
+        
         function setupProfileSection() {
-             profileSection.innerHTML = `
-                <h2>Perfil do Participante</h2>
-                <p class="section-intro">Para que nossa pesquisa seja bem-sucedida, é fundamental entender o seu perfil.<br><strong>Lembre-se:</strong> o objetivo não é testá-lo(a), mas sim nos ajudar a analisar os dados de forma anônima.</p>
-                <div class="question-block">
-                    <p>1. Em uma escala de 1 a 3, como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p>
-                    <div class="options">
-                        <label><input type="radio" name="knowledge" value="1" required> 1 - Nenhum/pouco conhecimento</label>
-                        <label><input type="radio" name="knowledge" value="2"> 2 - Conhecimento intermediário</label>
-                        <label><input type="radio" name="knowledge" value="3"> 3 - Conhecimento avançado</label>
-                    </div>
-                </div>
-                <button type="button" id="start-task-btn">Iniciar Tarefa</button>`;
+             profileSection.innerHTML = `<h2>Perfil do Participante</h2><p class="section-intro">Agora, para nos ajudar a analisar os dados, por favor, responda a uma única pergunta sobre seu perfil.</p><div class="question-block"><p>Em uma escala de 1 a 3, como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p><div class="options"><label><input type="radio" name="knowledge" value="1" required> 1 - Nenhum/pouco conhecimento</label><label><input type="radio" name="knowledge" value="2"> 2 - Conhecimento intermediário</label><label><input type="radio" name="knowledge" value="3"> 3 - Conhecimento avançado</label></div></div><button type="button" id="start-task-btn">Iniciar Tarefa</button>`;
              document.getElementById('start-task-btn').addEventListener('click', startTask);
         }
 
+        // --- FUNÇÃO DE VERIFICAÇÃO DE E-MAIL (ONLINE) ---
         function proceedToProfile() {
             if (!document.getElementById('user-name').value.trim()) { showAlert('Por favor, preencha seu nome.'); return; }
             const email = document.getElementById('user-email').value.trim();
@@ -186,27 +145,19 @@
             proceedBtn.disabled = true;
             proceedBtn.textContent = 'Verificando...';
 
-            // Define a função de callback no escopo global para o JSONP
             window.handleEmailCheckResponse = function(response) {
                 if (response.status === 'found') {
                     showAlert('Este e-mail já foi utilizado para responder à pesquisa. Agradecemos seu interesse, mas cada participante só pode enviar respostas uma vez.', 'Participação Duplicada');
-                    proceedBtn.disabled = false;
-                    proceedBtn.textContent = 'Prosseguir para a Pesquisa';
                 } else {
                     gateSection.style.display = 'none';
-                    profileSection.style.display = 'block';
+                    contextSection.style.display = 'block';
                 }
-                 // Limpa o script tag do DOM
                 const scriptTag = document.getElementById('jsonp-script');
-                if (scriptTag) {
-                    scriptTag.remove();
-                }
-                // Libera o botão caso a verificação falhe por algum motivo de rede
+                if (scriptTag) scriptTag.remove();
                 proceedBtn.disabled = false;
                 proceedBtn.textContent = 'Prosseguir para a Pesquisa';
             };
 
-            // Usa a técnica JSONP para fazer a chamada GET cross-domain
             const script = document.createElement('script');
             script.id = 'jsonp-script';
             script.src = `${SCRIPT_URL}?action=checkEmail&email=${encodeURIComponent(email)}&callback=handleEmailCheckResponse`;
@@ -226,40 +177,24 @@
                 showAlert('Por favor, responda a pergunta do perfil para continuar.');
                 return;
             }
-
-            const knowledgeLevel = parseInt(knowledgeInput.value);
-            let numExamplesToShow = 0, levelDescription = "";
-            if (knowledgeLevel === 1) { numExamplesToShow = 4; levelDescription = "Iniciante"; } 
-            else if (knowledgeLevel === 2) { numExamplesToShow = 6; levelDescription = "Intermediário"; } 
-            else { numExamplesToShow = 8; levelDescription = "Avançado"; }
             
-            const shuffledQuestions = shuffleArray([...referenceQuestions]);
-            const finalNumExamples = Math.min(numExamplesToShow, shuffledQuestions.length);
-            const selectedExamples = shuffledQuestions.slice(0, finalNumExamples);
+            const shuffledSimple = shuffleArray([...simpleQuestions]);
+            const shuffledIntermediate = shuffleArray([...intermediateQuestions]);
+            const shuffledComplex = shuffleArray([...complexQuestions]);
 
-            taskSection.innerHTML = `
-                <h2>Tarefa Principal (Nível ${levelDescription})</h2>
-                <div id="example-questions-container">
-                    <h3>A seguir, apresentamos ${finalNumExamples} exemplos de perguntas. Use-os como inspiração.</h3>
-                    <ol id="example-questions-list"></ol>
-                </div>
-                <div class="question-block">
-                    <p>Por favor, elabore de 10 a 20 perguntas, uma de cada vez:</p>
-                    <div class="question-input-area">
-                        <input type="text" id="new-question-input" placeholder="Digite uma pergunta aqui...">
-                        <button type="button" id="add-question-btn">Adicionar Pergunta</button>
-                    </div>
-                    <p id="question-counter-status"></p>
-                </div>
-                <div id="user-questions-list-container">
-                    <h4>Suas Perguntas Adicionadas:</h4>
-                    <ol id="user-questions-list"></ol>
-                </div>
-                <button type="submit" id="final-submit-btn" disabled>Enviar Respostas</button>
-            `;
+            const selectedExamples = [
+                ...shuffledSimple.slice(0, 4),
+                ...shuffledIntermediate.slice(0, 3),
+                ...shuffledComplex.slice(0, 1)
+            ];
+            
+            const finalShuffledExamples = shuffleArray(selectedExamples);
+            const numExamplesToShow = finalShuffledExamples.length;
+
+            taskSection.innerHTML = `<h2>Tarefa Principal</h2><div id="example-questions-container"><h3>A seguir, apresentamos ${numExamplesToShow} exemplos de perguntas. Estes são meros exemplos, <strong>evite copiá-los</strong>.</h3><ol id="example-questions-list"></ol></div><div class="question-block"><p>Por favor, elabore de 10 a 20 perguntas, uma de cada vez:</p><div class="question-input-area"><input type="text" id="new-question-input" placeholder="Digite uma pergunta aqui..."><button type="button" id="add-question-btn">Adicionar Pergunta</button></div><p id="question-counter-status"></p></div><div id="user-questions-list-container"><h4>Suas Perguntas Adicionadas:</h4><ol id="user-questions-list"></ol></div><button type="submit" id="final-submit-btn" disabled>Enviar Respostas</button>`;
             
             const exampleList = taskSection.querySelector('#example-questions-list');
-            selectedExamples.forEach(q => { const li = document.createElement('li'); li.textContent = q; exampleList.appendChild(li); });
+            finalShuffledExamples.forEach(q => { const li = document.createElement('li'); li.textContent = q; exampleList.appendChild(li); });
             
             document.getElementById('add-question-btn').addEventListener('click', addQuestionToList);
             
@@ -273,20 +208,13 @@
         function addQuestionToList() {
             const input = document.getElementById('new-question-input');
             const questionText = input.value.trim();
-
-            if (!questionText) {
-                showAlert('Por favor, digite uma pergunta antes de adicionar.');
-                return;
-            }
-
+            if (!questionText) { showAlert('Por favor, digite uma pergunta antes de adicionar.'); return; }
             const list = document.getElementById('user-questions-list');
             const li = document.createElement('li');
             li.textContent = questionText;
             list.appendChild(li);
-
             input.value = '';
             input.focus();
-            
             questionCount++;
             updateQuestionUI();
         }
@@ -296,7 +224,6 @@
             const finalSubmitBtn = document.getElementById('final-submit-btn');
             const addQuestionBtn = document.getElementById('add-question-btn');
             const newQuestionInput = document.getElementById('new-question-input');
-
             if (questionCount < 10) {
                 statusEl.textContent = `${questionCount} de 20 perguntas adicionadas. (Mínimo de 10 para enviar)`;
                 finalSubmitBtn.disabled = true;
@@ -312,6 +239,7 @@
             }
         }
         
+        // --- FUNÇÃO DE ENVIO DE DADOS (ONLINE) ---
         function submitForm(event) {
             event.preventDefault();
             
@@ -349,11 +277,14 @@
                 showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
                 researchForm.reset();
                 gateSection.innerHTML = '';
+                contextSection.innerHTML = '';
                 profileSection.innerHTML = '';
                 taskSection.innerHTML = '';
                 setupGateSection();
+                setupContextSection();
                 setupProfileSection();
                 gateSection.style.display = 'block';
+                contextSection.style.display = 'none';
                 profileSection.style.display = 'none';
                 taskSection.style.display = 'none';
             })
