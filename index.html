@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisa: Geração de Perguntas sobre o Mercado de Ações</title>
     <style>
-        /* Seus estilos CSS permanecem os mesmos */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         :root { --primary-color: #003366; --light-gray: #f4f4f9; --dark-gray: #333; --border-color: #ddd; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--light-gray); color: var(--dark-gray); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
@@ -77,10 +76,9 @@
     </div>
 
     <script>
-        
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7gcNBKRL1x12s82QC_hZqBRBTRdCGlGMMVC0kgPxs0XbMMaPHCez95_Nl_hA-PXzocQ/exec';
+     
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwP5pJYOccGJ1cMudqI0BD81ZhsvUZuwnomIg8zaGqajeTi6RL0pZh5LLCDkCyIs-zQnQ/exec';
 
-        // O restante do seu código JavaScript, com as funções proceedToProfile e submitForm corrigidas
         function showAlert(message, title = 'Alerta') { document.getElementById('modal-title').textContent = title; document.getElementById('modal-message').textContent = message; document.getElementById('custom-alert-overlay').style.display = 'flex'; }
         document.getElementById('modal-close-btn').addEventListener('click', () => { document.getElementById('custom-alert-overlay').style.display = 'none'; });
         
@@ -145,7 +143,10 @@
                 body: JSON.stringify(payload),
                 headers: { 'Content-Type': 'application/json' }
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) { throw new Error('A resposta da rede não foi "ok"'); }
+                return response.json();
+            })
             .then(data => {
                 if (data.status === 'found') {
                     showAlert('Este e-mail já foi utilizado para responder à pesquisa. Agradecemos seu interesse, mas cada participante só pode enviar respostas uma vez.', 'Participação Duplicada');
@@ -236,7 +237,10 @@
                 body: JSON.stringify(finalData),
                 headers: { 'Content-Type': 'application/json' }
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) { throw new Error('A resposta da rede não foi "ok"'); }
+                return response.json();
+            })
             .then(data => {
                 if (data.result === 'success') {
                     showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
