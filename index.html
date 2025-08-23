@@ -76,8 +76,7 @@
     </div>
 
     <script>
-        // **IMPORTANTE**: Verifique se esta URL corresponde à sua ÚLTIMA implantação do Apps Script.
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnvrk5sA2jiNI4OfVHafuig2PrIDZAYTnWTlBcDEhRca_3BsSzLvIigiWZLcIOx7xU/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqtlLVnTnf_gbTXpHNGDO955M-YfWgBPq-aLJuJ3kvx2xwWGuR_1_VP4y3NIIKEVKb/exec';
 
         function showAlert(message, title = 'Alerta') {
             document.getElementById('modal-title').textContent = title;
@@ -128,10 +127,23 @@
             });
         }
         
+        // --- INÍCIO DA SEÇÃO MODIFICADA ---
         function setupProfileSection() {
-             profileSection.innerHTML = `<h2>Perfil do Participante</h2><p class="section-intro">Agora, para nos ajudar a analisar os dados, por favor, responda a uma única pergunta sobre seu perfil.</p><div class="question-block"><p>Em uma escala de 1 a 3, como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p><div class="options"><label><input type="radio" name="knowledge" value="1" required> 1 - Nenhum/pouco conhecimento</label><label><input type="radio" name="knowledge" value="2"> 2 - Conhecimento intermediário</label><label><input type="radio" name="knowledge" value="3"> 3 - Conhecimento avançado</label></div></div><button type="button" id="start-task-btn">Iniciar Tarefa</button>`;
+             profileSection.innerHTML = `
+                <h2>Perfil do Participante</h2>
+                <p class="section-intro">Agora, para nos ajudar a analisar os dados, por favor, responda a uma única pergunta sobre seu perfil.</p>
+                <div class="question-block">
+                    <p>Como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p>
+                    <div class="options">
+                        <label><input type="radio" name="knowledge" value="1" required> Não tenho nenhum conhecimento, nunca investi e desconheço o mercado de ações brasileiro</label>
+                        <label><input type="radio" name="knowledge" value="2"> Tenho conhecimento intermediário, já ouvi falar no assunto</label>
+                        <label><input type="radio" name="knowledge" value="3"> Tenho conhecimento sobre o mercado de ações.</label>
+                    </div>
+                </div>
+                <button type="button" id="start-task-btn">Iniciar Tarefa</button>`;
              document.getElementById('start-task-btn').addEventListener('click', startTask);
         }
+        // --- FIM DA SEÇÃO MODIFICADA ---
 
         function proceedToProfile() {
             if (!document.getElementById('user-name').value.trim()) { showAlert('Por favor, preencha seu nome.'); return; }
