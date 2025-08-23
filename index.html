@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisa: Geração de Perguntas sobre o Mercado de Ações</title>
     <style>
+        /* Seus estilos CSS permanecem os mesmos */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         :root { --primary-color: #003366; --light-gray: #f4f4f9; --dark-gray: #333; --border-color: #ddd; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--light-gray); color: var(--dark-gray); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
@@ -76,13 +77,11 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBR8sQop_a9i6hPEGhc_XTy_pDLZ6FtImm9KIcFWcfGSPpZj3gix9k57ynGOyIawkFLg/exec';
+        
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywYetuqqK7BZ-vChlB2Tn4eJtjs-RaLXDpPezsg_OqpgVNirpx53ShBPDyHQ9hOKSnPA/exec';
 
-        function showAlert(message, title = 'Alerta') {
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-message').textContent = message;
-            document.getElementById('custom-alert-overlay').style.display = 'flex';
-        }
+        // O restante do seu código JavaScript, com as funções proceedToProfile e submitForm corrigidas
+        function showAlert(message, title = 'Alerta') { document.getElementById('modal-title').textContent = title; document.getElementById('modal-message').textContent = message; document.getElementById('custom-alert-overlay').style.display = 'flex'; }
         document.getElementById('modal-close-btn').addEventListener('click', () => { document.getElementById('custom-alert-overlay').style.display = 'none'; });
         
         const gateSection = document.getElementById('gate-section');
@@ -95,9 +94,7 @@
         const intermediateQuestions = ["Qual foi a variação percentual da ação da Azul em 11/06/2025?", "Qual foi a variação em reais da ação da Localiza em 30/06/2025?", "Qual foi a variação absoluta da ação da Ambev em 25/06/2025?", "Qual foi a variação intradiária percentual da ação da Usiminas em 20/06/2025?", "Qual foi a variação intradiária absoluta da ação da Raia Drogasil em 10/06/2025?", "Qual foi a variação em reais da ação da Vale em 26/06/2025?", "Qual foi a variação percentual da ação da Embraer em 12/06/2025?", "Qual foi a variação intradiária percentual da ação da BB Seguridade em 13/06/2025?", "Qual foi a variação absoluta da ação da Weg em 24/06/2025?", "Qual foi a variação intradiária absoluta da ação da Bradesco em 27/06/2025?", "Quais as três ações de maior alta percentual em 13/06/2025?", "Quais as cinco ações de menor variação em reais no pregão de 12/06/2025?", "Quais as quatro ações com maior volume em 27/06/2025?", "Quais os dez papéis de menor variação percentual em 18/06/2025?", "Quais as duas ações de maior intervalo intradiário percentual em 30/06/2025?", "Qual a ação do setor de siderurgia com a maior alta percentual em 20/06/2025?", "Qual a ação do setor de telecomunicações com a maior queda absoluta em 25/06/2025?", "Qual a ação do setor de consumo cíclico com o maior volume em 11/06/2025?", "Qual a ação do setor de bancos com a menor variação percentual em 24/06/2025?", "Qual a ação do setor de saúde com o maior intervalo intradiário absoluto em 30/06/2025?"];
         const complexQuestions = ["Qual foi o preço de fechamento da ação com a maior variação percentual em 12/06/2025?", "Qual foi o volume da ação com a menor variação em reais em 20/06/2025?", "Qual foi a quantidade de negócios da ação com o maior intervalo intradiário absoluto em 27/06/2025?", "Qual foi o preço médio da ação com a maior alta percentual em 18/06/2025?", "Qual foi o preço mínimo da ação com a menor variação percentual em 30/06/2025?", "Qual foi o volume da ação com a maior alta percentual entre as ações do IBOV em 20/06/2025?", "Qual foi o preço de fechamento da ação com a menor variação percentual entre as ações do IEE em 25/06/2025?", "Qual foi o intervalo intradiário percentual da ação com a maior queda em reais entre as ações do IMAT em 18/06/2025?", "Qual foi a quantidade de negócios da ação com a maior alta percentual entre as ações do IFNC em 30/06/2025?", "Qual foi o preço máximo da ação com a maior variação absoluta entre as ações do SMLL em 13/06/2025?"];
         
-        function shuffleArray(array) { 
-            for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; 
-        }
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
 
         document.addEventListener('DOMContentLoaded', () => {
             setupGateSection();
@@ -121,30 +118,15 @@
 
         function setupContextSection() {
             contextSection.innerHTML = `<h2 class="sr-only" style="display:none;">Contexto da Pesquisa</h2><div class="context-box"><h3>Sobre os Dados Utilizados</h3><p>Obrigado por sua colaboração! O objetivo desta pesquisa é testar uma ferramenta que traduz perguntas em português para uma linguagem de consulta de dados chamada SPARQL. Para isso, criamos uma <strong>base de dados simulada, mas realista, sobre o mercado de ações brasileiro (B3)</strong>, focada exclusivamente nas negociações do <strong>mês de junho de 2025</strong>.</p><p>Sua tarefa será formular perguntas que poderiam ser respondidas utilizando <strong>APENAS</strong> os seguintes tipos de informação:</p><ul><li><strong>Métricas Diárias de Ações:</strong> Preços de abertura, fechamento, máximo e mínimo, além do volume financeiro negociado para cada ação em um determinado dia.</li><li><strong>Informações das Empresas:</strong> Nomes de empresas (ex: Vale, Petrobras) e seus códigos de negociação (tickers, ex: VALE3, PETR4).</li><li><strong>Categorias de Mercado:</strong> Setores de atuação (ex: Siderurgia, Bancos, Transporte) e os principais Índices da B3 (ex: Ibovespa - IBOV, Financeiro - IFNC, Materiais Básicos - IMAT).</li><li><strong>Tipos de Ações:</strong> Diferenciação entre ações Ordinárias (ON), Preferenciais (PN) e Units.</li></ul><p><strong>É muito importante que suas perguntas se limitem a este universo.</strong> Por favor, <strong>EVITE</strong> perguntas sobre tópicos que <strong>NÃO</strong> estão em nossa base de dados, como:</p><ul><li>Análises financeiras (balanços, DRE, lucros).</li><li>Governança corporativa ou acionistas.</li><li>Dividendos, JCP ou outros proventos.</li><li>Recomendações de analistas ou notícias de mercado.</li></ul></div><button type="button" id="proceed-to-profile-btn">Entendido, ir para o Perfil</button>`;
-            document.getElementById('proceed-to-profile-btn').addEventListener('click', () => {
-                contextSection.style.display = 'none';
-                profileSection.style.display = 'block';
-            });
+            document.getElementById('proceed-to-profile-btn').addEventListener('click', () => { contextSection.style.display = 'none'; profileSection.style.display = 'block'; });
         }
         
-        // --- INÍCIO DA SEÇÃO MODIFICADA ---
         function setupProfileSection() {
-             profileSection.innerHTML = `
-                <h2>Perfil do Participante</h2>
-                <p class="section-intro">Agora, para nos ajudar a analisar os dados, por favor, responda a uma única pergunta sobre seu perfil.</p>
-                <div class="question-block">
-                    <p>Como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p>
-                    <div class="options">
-                        <label><input type="radio" name="knowledge" value="1" required> Não tenho nenhum conhecimento, nunca investi e desconheço o mercado de ações brasileiro</label>
-                        <label><input type="radio" name="knowledge" value="2"> Tenho conhecimento intermediário, já ouvi falar no assunto</label>
-                        <label><input type="radio" name="knowledge" value="3"> Tenho conhecimento sobre o mercado de ações.</label>
-                    </div>
-                </div>
-                <button type="button" id="start-task-btn">Iniciar Tarefa</button>`;
+             profileSection.innerHTML = `<h2>Perfil do Participante</h2><p class="section-intro">Agora, para nos ajudar a analisar os dados, por favor, responda a uma única pergunta sobre seu perfil.</p><div class="question-block"><p>Como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p><div class="options"><label><input type="radio" name="knowledge" value="1" required> Não tenho nenhum conhecimento, nunca investi e desconheço o mercado de ações brasileiro</label><label><input type="radio" name="knowledge" value="2"> Tenho conhecimento intermediário, já ouvi falar no assunto</label><label><input type="radio" name="knowledge" value="3"> Tenho conhecimento sobre o mercado de ações.</label></div></div><button type="button" id="start-task-btn">Iniciar Tarefa</button>`;
              document.getElementById('start-task-btn').addEventListener('click', startTask);
         }
-        // --- FIM DA SEÇÃO MODIFICADA ---
-
+        
+        // --- FUNÇÕES FINAIS E CORRIGIDAS ---
         function proceedToProfile() {
             if (!document.getElementById('user-name').value.trim()) { showAlert('Por favor, preencha seu nome.'); return; }
             const email = document.getElementById('user-email').value.trim();
@@ -156,53 +138,45 @@
             proceedBtn.disabled = true;
             proceedBtn.textContent = 'Verificando...';
 
-            window.handleEmailCheckResponse = function(response) {
-                if (response.status === 'found') {
+            const payload = { action: 'checkEmail', email: email };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'found') {
                     showAlert('Este e-mail já foi utilizado para responder à pesquisa. Agradecemos seu interesse, mas cada participante só pode enviar respostas uma vez.', 'Participação Duplicada');
                 } else {
                     gateSection.style.display = 'none';
                     contextSection.style.display = 'block';
                 }
-                const scriptTag = document.getElementById('jsonp-script');
-                if (scriptTag) scriptTag.remove();
-                proceedBtn.disabled = false;
-                proceedBtn.textContent = 'Prosseguir para a Pesquisa';
-            };
-
-            const script = document.createElement('script');
-            script.id = 'jsonp-script';
-            script.src = `${SCRIPT_URL}?action=checkEmail&email=${encodeURIComponent(email)}&callback=handleEmailCheckResponse`;
-            script.onerror = function() {
+            })
+            .catch(error => {
+                console.error('Erro na verificação de e-mail:', error);
                 showAlert('Não foi possível verificar o e-mail. Por favor, verifique sua conexão com a internet e tente novamente.', 'Erro de Rede');
+            })
+            .finally(() => {
                 proceedBtn.disabled = false;
                 proceedBtn.textContent = 'Prosseguir para a Pesquisa';
-            };
-            document.body.appendChild(script);
+            });
         }
 
         let questionCount = 0;
 
         function startTask() {
             const knowledgeInput = profileSection.querySelector('input[name="knowledge"]:checked');
-            if (!knowledgeInput) {
-                showAlert('Por favor, responda a pergunta do perfil para continuar.');
-                return;
-            }
+            if (!knowledgeInput) { showAlert('Por favor, responda a pergunta do perfil para continuar.'); return; }
             
             const shuffledSimple = shuffleArray([...simpleQuestions]);
             const shuffledIntermediate = shuffleArray([...intermediateQuestions]);
             const shuffledComplex = shuffleArray([...complexQuestions]);
-
-            const selectedExamples = [
-                ...shuffledSimple.slice(0, 4),
-                ...shuffledIntermediate.slice(0, 3),
-                ...shuffledComplex.slice(0, 1)
-            ];
-            
+            const selectedExamples = [...shuffledSimple.slice(0, 4), ...shuffledIntermediate.slice(0, 3), ...shuffledComplex.slice(0, 1)];
             const finalShuffledExamples = shuffleArray(selectedExamples);
-            const numExamplesToShow = finalShuffledExamples.length;
-
-            taskSection.innerHTML = `<h2>Tarefa Principal</h2><div id="example-questions-container"><h3>A seguir, apresentamos ${numExamplesToShow} exemplos de perguntas. Estes são meros exemplos, <strong>evite copiá-los</strong>.</h3><ol id="example-questions-list"></ol></div><div class="question-block"><p>Por favor, elabore de 10 a 20 perguntas, uma de cada vez:</p><div class="question-input-area"><input type="text" id="new-question-input" placeholder="Digite uma pergunta aqui..."><button type="button" id="add-question-btn">Adicionar Pergunta</button></div><p id="question-counter-status"></p></div><div id="user-questions-list-container"><h4>Suas Perguntas Adicionadas:</h4><ol id="user-questions-list"></ol></div><button type="submit" id="final-submit-btn" disabled>Enviar Respostas</button>`;
+            
+            taskSection.innerHTML = `<h2>Tarefa Principal</h2><div id="example-questions-container"><h3>A seguir, apresentamos ${finalShuffledExamples.length} exemplos de perguntas. Estes são meros exemplos, <strong>evite copiá-los</strong>.</h3><ol id="example-questions-list"></ol></div><div class="question-block"><p>Por favor, elabore de 10 a 20 perguntas, uma de cada vez:</p><div class="question-input-area"><input type="text" id="new-question-input" placeholder="Digite uma pergunta aqui..."><button type="button" id="add-question-btn">Adicionar Pergunta</button></div><p id="question-counter-status"></p></div><div id="user-questions-list-container"><h4>Suas Perguntas Adicionadas:</h4><ol id="user-questions-list"></ol></div><button type="submit" id="final-submit-btn" disabled>Enviar Respostas</button>`;
             
             const exampleList = taskSection.querySelector('#example-questions-list');
             finalShuffledExamples.forEach(q => { const li = document.createElement('li'); li.textContent = q; exampleList.appendChild(li); });
@@ -211,7 +185,6 @@
             
             questionCount = 0;
             updateQuestionUI();
-
             profileSection.style.display = 'none';
             taskSection.style.display = 'block';
         }
@@ -235,68 +208,46 @@
             const finalSubmitBtn = document.getElementById('final-submit-btn');
             const addQuestionBtn = document.getElementById('add-question-btn');
             const newQuestionInput = document.getElementById('new-question-input');
-            if (questionCount < 10) {
-                statusEl.textContent = `${questionCount} de 20 perguntas adicionadas. (Mínimo de 10 para enviar)`;
-                finalSubmitBtn.disabled = true;
-            } else if (questionCount >= 10 && questionCount < 20) {
-                statusEl.textContent = `${questionCount} de 20 perguntas adicionadas. Você já pode enviar ou adicionar mais.`;
-                finalSubmitBtn.disabled = false;
-            } else if (questionCount >= 20) {
-                statusEl.textContent = `Máximo de 20 perguntas atingido. Por favor, envie suas respostas.`;
-                finalSubmitBtn.disabled = false;
-                addQuestionBtn.disabled = true;
-                newQuestionInput.disabled = true;
-                newQuestionInput.placeholder = 'Máximo de perguntas alcançado.';
-            }
+            if (questionCount < 10) { statusEl.textContent = `${questionCount} de 20 perguntas adicionadas. (Mínimo de 10 para enviar)`; finalSubmitBtn.disabled = true;
+            } else if (questionCount >= 10 && questionCount < 20) { statusEl.textContent = `${questionCount} de 20 perguntas adicionadas. Você já pode enviar ou adicionar mais.`; finalSubmitBtn.disabled = false;
+            } else if (questionCount >= 20) { statusEl.textContent = `Máximo de 20 perguntas atingido. Por favor, envie suas respostas.`; finalSubmitBtn.disabled = false; addQuestionBtn.disabled = true; newQuestionInput.disabled = true; newQuestionInput.placeholder = 'Máximo de perguntas alcançado.'; }
         }
         
         function submitForm(event) {
             event.preventDefault();
-            
             const questionsList = document.querySelectorAll('#user-questions-list li');
-            if (questionsList.length < 10) {
-                showAlert('Você precisa adicionar no mínimo 10 perguntas para poder enviar.');
-                return;
-            }
+            if (questionsList.length < 10) { showAlert('Você precisa adicionar no mínimo 10 perguntas para poder enviar.'); return; }
 
             const userGeneratedQuestionsArray = Array.from(questionsList).map(li => li.textContent);
-            const userGeneratedQuestions = userGeneratedQuestionsArray.join('\n');
-
-            const submitButton = document.getElementById('final-submit-btn');
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.textContent = 'Enviando...';
-            }
-
+            
             const finalData = {
+                action: 'submitData',
                 name: document.getElementById('user-name').value,
                 email: document.getElementById('user-email').value,
-                profile: {
-                    knowledge: profileSection.querySelector('input[name="knowledge"]:checked').value
-                },
-                userGeneratedQuestions: userGeneratedQuestions
+                profile: { knowledge: profileSection.querySelector('input[name="knowledge"]:checked').value },
+                userGeneratedQuestions: userGeneratedQuestionsArray.join('\n')
             };
+
+            const submitButton = document.getElementById('final-submit-btn');
+            if (submitButton) { submitButton.disabled = true; submitButton.textContent = 'Enviando...'; }
             
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(finalData)
+                body: JSON.stringify(finalData),
+                headers: { 'Content-Type': 'application/json' }
             })
-            .then(() => {
-                showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
-                researchForm.reset();
-                gateSection.innerHTML = '';
-                contextSection.innerHTML = '';
-                profileSection.innerHTML = '';
-                taskSection.innerHTML = '';
-                setupGateSection();
-                setupContextSection();
-                setupProfileSection();
-                gateSection.style.display = 'block';
-                contextSection.style.display = 'none';
-                profileSection.style.display = 'none';
-                taskSection.style.display = 'none';
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
+                    researchForm.reset();
+                    gateSection.innerHTML = ''; contextSection.innerHTML = ''; profileSection.innerHTML = ''; taskSection.innerHTML = '';
+                    setupGateSection(); setupContextSection(); setupProfileSection();
+                    gateSection.style.display = 'block';
+                    contextSection.style.display = 'none'; profileSection.style.display = 'none'; taskSection.style.display = 'none';
+                } else {
+                    throw new Error(data.error || 'Ocorreu um erro desconhecido no servidor.');
+                }
             })
             .catch(error => {
                 console.error('Erro ao enviar dados:', error);
@@ -304,10 +255,7 @@
             })
             .finally(() => {
                 const finalBtn = document.getElementById('final-submit-btn');
-                if(finalBtn) {
-                    finalBtn.disabled = false;
-                    finalBtn.textContent = 'Enviar Respostas';
-                }
+                if(finalBtn) { finalBtn.disabled = false; finalBtn.textContent = 'Enviar Respostas'; }
             });
         }
     </script>
