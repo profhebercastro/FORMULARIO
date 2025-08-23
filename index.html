@@ -129,7 +129,7 @@
         }
         
         function setupProfileSection() {
-             profileSection.innerHTML = `<h2>Perfil do Participante</h2><p class="section-intro">Agora, para nos ajudar a analisar os dados, por favor, responda a uma única pergunta sobre seu perfil.</p><div class="question-block"><p>Em uma escala de 1 a 3, como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p><div class="options"><label><input type="radio" name="knowledge" value="1" required> 1 - Nenhum/pouco conhecimento</label><label><input type="radio" name="knowledge" value="2"> 2 - Conhecimento intermediário</label><label><input type="radio" name="knowledge" value="3"> 3 - Conhecimento avançado</label></div></div><button type="button" id="start-task-btn">Iniciar Tarefa</button>`;
+             profileSection.innerHTML = `<h2>Perfil do Participante</h2><p class="section-intro">Agora, para nos ajudar a analisar os dados, por favor, responda a uma única pergunta sobre seu perfil.</p><div class="question-block"><p>Em uma escala de 1 a 3, como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p><div class="options"><label><input type="radio" name="knowledge" value="1" required> 1 - Não tenho conhecimento, nunca tive contato com o mercado da Bolsa de Valores</label><label><input type="radio" name="knowledge" value="2"> 2 - Tenho conhecimento intermediário ou limitado sobre o mercado da Bolsa de Valores</label><label><input type="radio" name="knowledge" value="3"> 3 - Tenho conhecimento avançado no mercado da Bolsa de Valores</label></div></div><button type="button" id="start-task-btn">Iniciar Tarefa</button>`;
              document.getElementById('start-task-btn').addEventListener('click', startTask);
         }
 
