@@ -77,7 +77,7 @@
 
     <script>
       
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0FQpo_ZeAuWaPlNMP5zFPrmi2LDdfotbVsa32kNIOhCwQieQ4mlkyJL_Ozt8r_qqV_A/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwj4yWXWPCjsi3odhYU53E4hIjqjJT_4svRUXlGKJCGrf1kbljFhjy3Gq079_YvdBoatA/exec';
 
         function showAlert(message, title = 'Alerta') {
             document.getElementById('modal-title').textContent = title;
@@ -92,13 +92,11 @@
         const taskSection = document.getElementById('task-section');
         const researchForm = document.getElementById('research-form');
         
-        // --- INÍCIO DA SEÇÃO MODIFICADA ---
         const simpleQuestions = ["Qual foi o preço de fechamento da ação da Vale em 18/06/2025?", "Qual foi o preço de abertura da ação da Ambev em 25/06/2025?", "Qual foi o preço máximo da ação da Localiza em 11/06/2025?", "Qual foi o preço mínimo da ação da Suzano em 13/06/2025?", "Qual foi o preço médio da ação da Braskem em 20/06/2025?", "Qual foi o preço de fechamento da WEGE3 em 27/06/2025?", "Qual foi o preço de abertura da VALE3 em 11/06/2025?", "Qual foi o preço máximo da PETR4 em 12/06/2025?", "Qual foi o preço mínimo da GGBR3 em 20/06/2025?", "Qual foi o preço médio da MGLU3 em 24/06/2025?", "Qual o código de negociação da ação da Petrobras?", "Qual o ticker da ação da Azul?", "Qual o código de negociação da ação da BTG Pactual?", "Qual o símbolo da ação da Embraer?", "Qual o código de negociação da ação da BB Seguridade?", "Qual o ticker da ação da Magazine Luiza?", "Qual o símbolo da ação da Weg?", "Qual o ticker da ação da Braskem?", "Qual o código de negociação da ação da Klabin?", "Qual o símbolo da ação da Itausa?", "Quais são as ações do setor de bancos?", "Quais são os tickers do setor de telecomunicações?", "Quais são as ações do setor de papel e celulose?", "Quais são os tickers do setor de mineração?", "Quais são as ações do setor de tecnologia da informação?", "Quais são as empresas do setor de transporte?", "Quais são as empresas do setor financeiro?", "Quais são as empresas do setor de bebidas?", "Quais são as empresas do setor de consumo cíclico?", "Quais são as empresas do setor de materiais básicos?"];
         
         const intermediateQuestions = ["Qual foi o volume negociado nas ações do setor de mineração em 20/06/2025?", "Qual foi o volume negociado no setor de saúde em 18/06/2025?", "Qual foi a soma da quantidade de negócios no setor de siderurgia em 30/06/2025?", "Qual foi o volume total das ações do setor de consumo não cíclico em 27/06/2025?", "Qual foi a soma do volume das ações do setor de telecomunicações em 13/06/2025?", "Qual foi a soma da quantidade de negócios no setor de bebidas em 30/06/2025?", "Qual foi o volume negociado nas ações do setor de energia elétrica em 20/06/2025?", "Qual foi a soma da quantidade de negócios no setor de saúde em 30/06/2025?", "Qual foi a soma da quantidade de negócios no setor de transporte em 18/06/2025?", "Qual foi o volume negociado nas ações do setor de bancos em 20/06/2025?", "Qual foi o preço máximo da ação ordinária da Vale em 30/06/2025?", "Qual foi o preço de fechamento da ação preferencial da Braskem em 18/06/2025?", "Qual foi o preço mínimo da ação ordinária da Usiminas em 24/06/2025?", "Qual foi o preço de abertura da ação preferencial da Klabin em 25/06/2025?", "Qual foi o preço médio da ação ordinária da Petrobras em 26/06/2025?", "Qual foi o preço máximo da ação TAEE11 em 30/06/2025?", "Qual foi o preço mínimo da ação ordinária da Embraer em 10/06/2025?", "Qual foi o preço médio da ação preferencial do Bradesco em 13/06/2025?", "Qual foi o preço de fechamento da ação ordinária da Magazine Luiza em 18/06/2025?", "Qual foi o preço de abertura da ação preferencial da Gerdau em 27/06/2025?", "Qual foi a variação percentual da ação da Azul em 11/06/2025?", "Qual foi a variação em reais da ação da Localiza em 30/06/2025?", "Qual foi a variação absoluta da ação da Ambev em 25/06/2025?", "Qual foi a variação percentual da Usiminas em 20/06/2025?", "Qual foi a variação intradiária absoluta da ação da Raia Drogasil em 10/06/2025?", "Qual foi a variação em reais da ação da Vale em 26/06/2025?", "Qual foi a variação percentual da ação da Embraer em 12/06/2025?", "Qual foi a variação percentual da ação da BB Seguridade em 13/06/2025?", "Qual foi a variação absoluta da ação da Weg em 24/06/2025?", "Qual foi a variação intradiária absoluta da ação da Bradesco em 30/06/2025?", "Quais as três ações de maior alta percentual em 13/06/2025?", "Quais as cinco ações de menor variação em reais no pregão de 12/06/2025?", "Qual a ação com maior alta variação percentual em 27/06/2025?", "Qual o papel de menor variação percentual em 18/06/2025?", "Quais as duas ações de maior intervalo intradiário percentual em 30/06/2025?", "Qual a ação do setor de siderurgia com a maior alta percentual em 20/06/2025?", "Qual a ação do setor de telecomunicações com a maior baixa percentual em 25/06/2025?", "Qual a ação do setor de energia eletrica com o maior alta percentual em 11/06/2025?", "Qual a ação do setor de bancos com a menor variação percentual em 24/06/2025?", "Qual a ação do setor de saúde com o maior intervalo intradiário absoluto em 30/06/2025?"];
         
         const complexQuestions = ["Qual foi o preço de fechamento da ação com a menor variação percentual em 12/06/2025?", "Qual foi o volume da ação com a menor variação em reais em 20/06/2025?", "Qual foi o preço de abertura da ação com o maior intervalo absoluto em 27/06/2025?", "Qual foi o preço médio da ação com a maior alta percentual em 18/06/2025?", "Qual foi o preço mínimo da ação com a menor variação percentual em 30/06/2025?", "Qual foi o volume da ação com a maior alta percentual entre as ações do IBOV em 30/06/2025?", "Qual foi o preço de fechamento da ação com a menor variação percentual entre as ações do IEE em 25/06/2025?", "Qual foi o intervalo intradiário percentual da ação com a maior queda em reais entre as ações do IMAT em 18/06/2025?", "Qual foi a quantidade de negócios da ação com a maior alta percentual entre as ações do IFNC em 30/06/2025?", "Qual foi o preço máximo da ação com a maior variação absoluta entre as ações do SMLL em 13/06/2025?"];
-        // --- FIM DA SEÇÃO MODIFICADA ---
         
         function shuffleArray(array) { 
             for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; 
@@ -159,33 +157,28 @@
             proceedBtn.disabled = true;
             proceedBtn.textContent = 'Verificando...';
 
-            const payload = { action: 'checkEmail', email: email };
-
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload),
-                headers: { 'Content-Type': 'application/json' }
-            })
-            .then(response => {
-                if (!response.ok) { throw new Error('A resposta da rede não foi "ok"'); }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'found') {
+            window.handleEmailCheckResponse = function(response) {
+                if (response.status === 'found') {
                     showAlert('Este e-mail já foi utilizado para responder à pesquisa. Agradecemos seu interesse, mas cada participante só pode enviar respostas uma vez.', 'Participação Duplicada');
                 } else {
                     gateSection.style.display = 'none';
                     contextSection.style.display = 'block';
                 }
-            })
-            .catch(error => {
-                console.error('Erro na verificação de e-mail:', error);
-                showAlert('Não foi possível verificar o e-mail. Por favor, verifique sua conexão com a internet e tente novamente.', 'Erro de Rede');
-            })
-            .finally(() => {
+                const scriptTag = document.getElementById('jsonp-script');
+                if (scriptTag) scriptTag.remove();
                 proceedBtn.disabled = false;
                 proceedBtn.textContent = 'Prosseguir para a Pesquisa';
-            });
+            };
+
+            const script = document.createElement('script');
+            script.id = 'jsonp-script';
+            script.src = `${SCRIPT_URL}?action=checkEmail&email=${encodeURIComponent(email)}&callback=handleEmailCheckResponse`;
+            script.onerror = function() {
+                showAlert('Não foi possível verificar o e-mail. Por favor, verifique sua conexão com a internet e tente novamente.', 'Erro de Rede');
+                proceedBtn.disabled = false;
+                proceedBtn.textContent = 'Prosseguir para a Pesquisa';
+            };
+            document.body.appendChild(script);
         }
 
         let questionCount = 0;
@@ -268,38 +261,43 @@
             }
 
             const userGeneratedQuestionsArray = Array.from(questionsList).map(li => li.textContent);
-            
-            const finalData = {
-                action: 'submitData',
-                name: document.getElementById('user-name').value,
-                email: document.getElementById('user-email').value,
-                profile: { knowledge: profileSection.querySelector('input[name="knowledge"]:checked').value },
-                userGeneratedQuestions: userGeneratedQuestionsArray.join('\n')
-            };
+            const userGeneratedQuestions = userGeneratedQuestionsArray.join('\n');
 
             const submitButton = document.getElementById('final-submit-btn');
-            if (submitButton) { submitButton.disabled = true; submitButton.textContent = 'Enviando...'; }
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Enviando...';
+            }
+
+            const finalData = {
+                name: document.getElementById('user-name').value,
+                email: document.getElementById('user-email').value,
+                profile: {
+                    knowledge: profileSection.querySelector('input[name="knowledge"]:checked').value
+                },
+                userGeneratedQuestions: userGeneratedQuestions
+            };
             
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                body: JSON.stringify(finalData),
-                headers: { 'Content-Type': 'application/json' }
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(finalData)
             })
-            .then(response => {
-                if (!response.ok) { throw new Error('A resposta da rede não foi "ok"'); }
-                return response.json();
-            })
-            .then(data => {
-                if (data.result === 'success') {
-                    showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
-                    researchForm.reset();
-                    gateSection.innerHTML = ''; contextSection.innerHTML = ''; profileSection.innerHTML = ''; taskSection.innerHTML = '';
-                    setupGateSection(); setupContextSection(); setupProfileSection();
-                    gateSection.style.display = 'block';
-                    contextSection.style.display = 'none'; profileSection.style.display = 'none'; taskSection.style.display = 'none';
-                } else {
-                    throw new Error(data.error || 'Ocorreu um erro desconhecido no servidor.');
-                }
+            .then(() => {
+                showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
+                researchForm.reset();
+                gateSection.innerHTML = '';
+                contextSection.innerHTML = '';
+                profileSection.innerHTML = '';
+                taskSection.innerHTML = '';
+                setupGateSection();
+                setupContextSection();
+                setupProfileSection();
+                gateSection.style.display = 'block';
+                contextSection.style.display = 'none';
+                profileSection.style.display = 'none';
+                taskSection.style.display = 'none';
             })
             .catch(error => {
                 console.error('Erro ao enviar dados:', error);
@@ -307,7 +305,10 @@
             })
             .finally(() => {
                 const finalBtn = document.getElementById('final-submit-btn');
-                if(finalBtn) { finalBtn.disabled = false; finalBtn.textContent = 'Enviar Respostas'; }
+                if(finalBtn) {
+                    finalBtn.disabled = false;
+                    finalBtn.textContent = 'Enviar Respostas';
+                }
             });
         }
     </script>
