@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisa: Geração de Perguntas sobre o Mercado de Ações</title>
     <style>
-        /* Seu CSS completo, sem alterações */
+        /* ... (seu CSS completo aqui, sem alterações) ... */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         :root { --primary-color: #003366; --light-gray: #f4f4f9; --dark-gray: #333; --border-color: #ddd; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--light-gray); color: var(--dark-gray); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
@@ -19,7 +19,7 @@
         .question-block > p, .consent-title { font-weight: 600; margin-bottom: 10px; }
         .options label, .checkbox-label { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.2s ease; }
         .options label:hover, .checkbox-label:hover { background-color: #f0f3f8; }
-        .options label span { margin-left: 12px; flex-grow: 1; }
+        .options label span { margin-left: 12px; flex-grow: 1; text-align: left; }
         input[type="radio"], input[type="checkbox"] { margin-right: 12px; transform: scale(1.1); flex-shrink: 0; }
         input[type="text"], input[type="email"] { width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 1rem; }
         button { display: block; width: 100%; padding: 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease; margin-top: 20px; }
@@ -77,8 +77,7 @@
     </div>
 
     <script>
-        
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwjb_JdspGuA7vq2KVCj-H1dqULodV-iR5EI0L9lIfRgy7hdwHFfjovv89h3UVKux35WA/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNJUX7UyDEWJMKgF54LJ1CRFLMuf7SmdSYHCKDuStp1Au2bqmAqrpIgkPVcJja6-KYIw/exec';
 
         function showAlert(message, title = 'Alerta') { document.getElementById('modal-title').textContent = title; document.getElementById('modal-message').textContent = message; document.getElementById('custom-alert-overlay').style.display = 'flex'; }
         document.getElementById('modal-close-btn').addEventListener('click', () => { document.getElementById('custom-alert-overlay').style.display = 'none'; });
@@ -88,7 +87,13 @@
         const taskSection = document.getElementById('task-section');
         const researchForm = document.getElementById('research-form');
         
-        const fixedExampleQuestions = ["Qual foi o preço de fechamento da ação preferencial da Braskem em 11/06/2025?", "Qual o setor de atuação da Bradesco?", "Quais as 2 ações de maior variação percentual no pregão de 30/06/2025?", "Qual foi a quantidade de negócios da ação com a maior baixa percentual em 18/06/2025?", "Qual foi a quantidade de negócios da ação com a maior alta percentual no SMLL em 10/06/2025?"];
+        const fixedExampleQuestions = [
+            "Qual foi o preço de fechamento da ação preferencial da Braskem em 11/06/2025?",
+            "Qual o setor de atuação da Bradesco?",
+            "Quais as 2 ações de maior variação percentual no pregão de 30/06/2025?",
+            "Qual foi a quantidade de negócios da ação com a maior baixa percentual em 18/06/2025?",
+            "Qual foi a quantidade de negócios da ação com a maior alta percentual no SMLL em 10/06/2025?"
+        ];
         
         document.addEventListener('DOMContentLoaded', () => {
             setupGateSection();
@@ -187,11 +192,9 @@
         function updateQuestionUI() {
             const statusEl = document.getElementById('question-counter-status');
             const finalSubmitBtn = document.getElementById('final-submit-btn');
-            const addQuestionBtn = document.getElementById('add-question-btn');
-            const newQuestionInput = document.getElementById('new-question-input');
             if (questionCount < 10) { statusEl.textContent = `${questionCount} de 20 perguntas adicionadas. (Mínimo de 10 para enviar)`; finalSubmitBtn.disabled = true;
             } else if (questionCount >= 10 && questionCount < 20) { statusEl.textContent = `${questionCount} de 20 perguntas adicionadas. Você já pode enviar ou adicionar mais.`; finalSubmitBtn.disabled = false;
-            } else if (questionCount >= 20) { statusEl.textContent = `Máximo de 20 perguntas atingido. Por favor, envie suas respostas.`; finalSubmitBtn.disabled = false; addQuestionBtn.disabled = true; newQuestionInput.disabled = true; newQuestionInput.placeholder = 'Máximo de perguntas alcançado.'; }
+            } else if (questionCount >= 20) { statusEl.textContent = `Máximo de 20 perguntas atingido. Por favor, envie suas respostas.`; finalSubmitBtn.disabled = false; document.getElementById('add-question-btn').disabled = true; document.getElementById('new-question-input').disabled = true; document.getElementById('new-question-input').placeholder = 'Máximo de perguntas alcançado.'; }
         }
         
         function submitForm(event) {
@@ -225,14 +228,10 @@
                 if (data.result === 'success') {
                     showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
                     researchForm.reset();
-                    gateSection.innerHTML = '';
-                    profileSection.innerHTML = '';
-                    taskSection.innerHTML = '';
-                    setupGateSection();
-                    setupProfileSection();
+                    gateSection.innerHTML = ''; profileSection.innerHTML = ''; taskSection.innerHTML = '';
+                    setupGateSection(); setupProfileSection();
                     gateSection.style.display = 'block';
-                    profileSection.style.display = 'none';
-                    taskSection.style.display = 'none';
+                    profileSection.style.display = 'none'; taskSection.style.display = 'none';
                 } else {
                     throw new Error(data.error || 'Ocorreu um erro desconhecido no servidor.');
                 }
