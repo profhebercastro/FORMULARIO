@@ -77,8 +77,8 @@
     </div>
 
     <script>
-        // COLE A NOVA URL DA SUA IMPLANTAÇÃO AQUI
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOGak9q185OBQ3sAtz4EnCphlWGcXwk_CRjMAL_Zd9J7fP2rtD-3lSjkQU191BjBImWA/exec';
+       
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx1FYZsPGVKCfbPN6-HTnCtwZgC0MLJQzIFIEDoo1Cd5LiHrIPfWgj02-tp07081dSrTg/exec';
 
         function showAlert(message, title = 'Alerta') { document.getElementById('modal-title').textContent = title; document.getElementById('modal-message').textContent = message; document.getElementById('custom-alert-overlay').style.display = 'flex'; }
         document.getElementById('modal-close-btn').addEventListener('click', () => { document.getElementById('custom-alert-overlay').style.display = 'none'; });
@@ -111,7 +111,7 @@
              document.getElementById('start-task-btn').addEventListener('click', startTask);
         }
         
-        // --- FUNÇÃO DE VALIDAÇÃO SIMPLES (SEM VERIFICAÇÃO DE E-MAIL) ---
+        // --- FUNÇÃO DE VALIDAÇÃO SIMPLIFICADA (SEM VERIFICAÇÃO DE E-MAIL AO VIVO) ---
         function proceedToProfile() {
             if (!document.getElementById('user-name').value.trim()) { showAlert('Por favor, preencha seu nome.'); return; }
             if (!document.getElementById('user-email').value.trim()) { showAlert('Por favor, preencha seu e-mail.'); return; }
