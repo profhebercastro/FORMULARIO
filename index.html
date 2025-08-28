@@ -77,8 +77,8 @@
     </div>
 
     <script>
-        
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxBKFYmnZG_YcujeEpZ9cw1xEtCj66NI-lpatQ4-hpoBHbJkzlWGiiwICFvmqxaIYIMbA/exec';
+     
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzvaC_QG6fnPQHisoUmJyGl1oeaeLIQLYnVMcthSHPmcRa7mts9F0dfLRoJUmLs2zzwA/exec';
 
         function showAlert(message, title = 'Alerta') { document.getElementById('modal-title').textContent = title; document.getElementById('modal-message').textContent = message; document.getElementById('custom-alert-overlay').style.display = 'flex'; }
         document.getElementById('modal-close-btn').addEventListener('click', () => { document.getElementById('custom-alert-overlay').style.display = 'none'; });
@@ -88,13 +88,7 @@
         const taskSection = document.getElementById('task-section');
         const researchForm = document.getElementById('research-form');
         
-        const fixedExampleQuestions = [
-            "Qual foi o preço de fechamento da ação preferencial da Braskem em 11/06/2025?",
-            "Qual o setor de atuação da Bradesco?",
-            "Quais as 2 ações de maior variação percentual no pregão de 30/06/2025?",
-            "Qual foi a quantidade de negócios da ação com a maior baixa percentual em 18/06/2025?",
-            "Qual foi a quantidade de negócios da ação com a maior alta percentual no SMLL em 10/06/2025?"
-        ];
+        const fixedExampleQuestions = ["Qual foi o preço de fechamento da ação preferencial da Braskem em 11/06/2025?", "Qual o setor de atuação da Bradesco?", "Quais as 2 ações de maior variação percentual no pregão de 30/06/2025?", "Qual foi a quantidade de negócios da ação com a maior baixa percentual em 18/06/2025?", "Qual foi a quantidade de negócios da ação com a maior alta percentual no SMLL em 10/06/2025?"];
         
         document.addEventListener('DOMContentLoaded', () => {
             setupGateSection();
@@ -117,15 +111,44 @@
              document.getElementById('start-task-btn').addEventListener('click', startTask);
         }
         
-        // --- FUNÇÃO SIMPLIFICADA SEM VERIFICAÇÃO DE E-MAIL ---
         function proceedToProfile() {
             if (!document.getElementById('user-name').value.trim()) { showAlert('Por favor, preencha seu nome.'); return; }
-            if (!document.getElementById('user-email').value.trim()) { showAlert('Por favor, preencha seu e-mail.'); return; }
+            const email = document.getElementById('user-email').value.trim();
+            if (!email) { showAlert('Por favor, preencha seu e-mail.'); return; }
             if (!document.getElementById('age-check').checked) { showAlert('Você deve declarar ser maior de 18 anos para participar.'); return; }
             if (!document.getElementById('consent-check').checked) { showAlert('É necessário concordar com o Termo para participar.'); return; }
-            
-            gateSection.style.display = 'none';
-            profileSection.style.display = 'block';
+
+            const proceedBtn = document.getElementById('proceed-btn');
+            proceedBtn.disabled = true;
+            proceedBtn.textContent = 'Verificando...';
+
+            const payload = { action: 'checkEmail', email: email };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => {
+                if (!response.ok) { throw new Error('A resposta da rede não foi "ok"'); }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'found') {
+                    showAlert('Este e-mail já foi utilizado para responder à pesquisa. Agradecemos seu interesse, mas cada participante só pode enviar respostas uma vez.', 'Participação Duplicada');
+                } else {
+                    gateSection.style.display = 'none';
+                    profileSection.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Erro na verificação de e-mail:', error);
+                showAlert('Não foi possível verificar o e-mail. Por favor, verifique sua conexão com a internet e tente novamente.', 'Erro de Rede');
+            })
+            .finally(() => {
+                proceedBtn.disabled = false;
+                proceedBtn.textContent = 'Prosseguir para a Pesquisa';
+            });
         }
 
         let questionCount = 0;
@@ -179,6 +202,7 @@
             const userGeneratedQuestionsArray = Array.from(questionsList).map(li => li.textContent);
             
             const finalData = {
+                action: 'submitData',
                 name: document.getElementById('user-name').value,
                 email: document.getElementById('user-email').value,
                 profile: { knowledge: profileSection.querySelector('input[name="knowledge"]:checked').value },
@@ -190,27 +214,32 @@
             
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', // Envia os dados sem esperar uma resposta legível
                 body: JSON.stringify(finalData),
                 headers: { 'Content-Type': 'application/json' }
             })
-            .then(() => {
-                // Assume sucesso, pois com 'no-cors' não recebemos status de erro do servidor
-                showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
-                researchForm.reset();
-                gateSection.innerHTML = '';
-                profileSection.innerHTML = '';
-                taskSection.innerHTML = '';
-                setupGateSection();
-                setupProfileSection();
-                gateSection.style.display = 'block';
-                profileSection.style.display = 'none';
-                taskSection.style.display = 'none';
+            .then(response => {
+                if (!response.ok) { throw new Error('A resposta da rede não foi "ok"'); }
+                return response.json();
+            })
+            .then(data => {
+                if (data.result === 'success') {
+                    showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
+                    researchForm.reset();
+                    gateSection.innerHTML = '';
+                    profileSection.innerHTML = '';
+                    taskSection.innerHTML = '';
+                    setupGateSection();
+                    setupProfileSection();
+                    gateSection.style.display = 'block';
+                    profileSection.style.display = 'none';
+                    taskSection.style.display = 'none';
+                } else {
+                    throw new Error(data.error || 'Ocorreu um erro desconhecido no servidor.');
+                }
             })
             .catch(error => {
-                // Este erro só acontecerá se houver falha de rede (ex: sem internet)
-                console.error('Erro de rede ao enviar dados:', error);
-                showAlert('Ocorreu um erro de rede ao enviar suas respostas. Verifique sua conexão e tente novamente.', 'Erro no Envio');
+                console.error('Erro ao enviar dados:', error);
+                showAlert('Ocorreu um erro ao enviar suas respostas. Verifique sua conexão e tente novamente.', 'Erro no Envio');
             })
             .finally(() => {
                 const finalBtn = document.getElementById('final-submit-btn');
