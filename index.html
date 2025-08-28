@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisa: Geração de Perguntas sobre o Mercado de Ações</title>
     <style>
-        /* ... (seu CSS completo aqui, sem alterações) ... */
+        /* Seu CSS completo, sem alterações */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         :root { --primary-color: #003366; --light-gray: #f4f4f9; --dark-gray: #333; --border-color: #ddd; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--light-gray); color: var(--dark-gray); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
@@ -78,7 +78,7 @@
 
     <script>
         
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyud7p9SkntsnGGhIm_f6LrK5NRjvdOHzdnDusImS4n6YRaTUXl6MjrdyRDh625ZCFMjg/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby7KqrEsZictd78wy3un_K5FbP9PknbYk3QdxxDHQGNhY2LTlaLc4PqQti4nrv56F0jIQ/exec';
 
         function showAlert(message, title = 'Alerta') { document.getElementById('modal-title').textContent = title; document.getElementById('modal-message').textContent = message; document.getElementById('custom-alert-overlay').style.display = 'flex'; }
         document.getElementById('modal-close-btn').addEventListener('click', () => { document.getElementById('custom-alert-overlay').style.display = 'none'; });
@@ -111,7 +111,6 @@
              document.getElementById('start-task-btn').addEventListener('click', startTask);
         }
         
-        // --- FUNÇÃO DE VERIFICAÇÃO DE E-MAIL CORRIGIDA ---
         function proceedToProfile() {
             if (!document.getElementById('user-name').value.trim()) { showAlert('Por favor, preencha seu nome.'); return; }
             const email = document.getElementById('user-email').value.trim();
