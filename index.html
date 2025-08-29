@@ -1,247 +1,221 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pesquisa: Geração de Perguntas sobre o Mercado de Ações</title>
-  <style>
-    /* mantive seu CSS original */
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-    :root { --primary-color: #003366; --light-gray: #f4f4f9; --dark-gray: #333; --border-color: #ddd; }
-    body { font-family: 'Poppins', sans-serif; background-color: var(--light-gray); color: var(--dark-gray); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-    .form-container { width: 100%; max-width: 800px; }
-    .page-header { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 20px; }
-    .logo { max-height: 70px; width: auto; }
-    main { background-color: white; padding: 30px 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-    h1, h2 { font-weight: 700; color: var(--primary-color); text-align: center; margin-bottom: 30px; }
-    .section-intro { text-align: center; margin-bottom: 30px; font-style: italic; color: #555; line-height: 1.6; }
-    .question-block { margin-bottom: 30px; }
-    .question-block > p, .consent-title { font-weight: 600; margin-bottom: 10px; }
-    .options label, .checkbox-label { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.2s ease; }
-    .options label:hover, .checkbox-label:hover { background-color: #f0f3f8; }
-    .options label span { margin-left: 12px; flex-grow: 1; text-align: left; }
-    input[type="radio"], input[type="checkbox"] { margin-right: 12px; transform: scale(1.1); flex-shrink: 0; }
-    input[type="text"], input[type="email"] { width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 1rem; }
-    button { display: block; width: 100%; padding: 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease; margin-top: 20px; }
-    button:hover { background-color: #004b8d; }
-    button:disabled { background-color: #aaa; cursor: not-allowed; }
-    #profile-section, #task-section { display: none; }
-    .consent-text { max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; text-align: justify; line-height: 1.7; }
-    #example-questions-container { background-color: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-    #user-questions-list-container { border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; min-height: 100px; background-color: #fafafa; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa: Geração de Perguntas sobre o Mercado de Ações</title>
+    <style>
+        /* (mantive todo o seu CSS original) */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        :root { --primary-color: #003366; --light-gray: #f4f4f9; --dark-gray: #333; --border-color: #ddd; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light-gray); color: var(--dark-gray); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .form-container { width: 100%; max-width: 800px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 20px; }
+        .logo { max-height: 70px; width: auto; }
+        main { background-color: white; padding: 30px 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1, h2 { font-weight: 700; color: var(--primary-color); text-align: center; margin-bottom: 30px; }
+        .section-intro { text-align: center; margin-bottom: 30px; font-style: italic; color: #555; line-height: 1.6; }
+        .question-block { margin-bottom: 30px; }
+        .question-block > p, .consent-title { font-weight: 600; margin-bottom: 10px; }
+        .options label, .checkbox-label { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.2s ease; }
+        .options label:hover, .checkbox-label:hover { background-color: #f0f3f8; }
+        .options label span { margin-left: 12px; flex-grow: 1; text-align: left; }
+        input[type="radio"], input[type="checkbox"] { margin-right: 12px; transform: scale(1.1); flex-shrink: 0; }
+        input[type="text"], input[type="email"] { width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 1rem; }
+        button { display: block; width: 100%; padding: 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease; margin-top: 20px; }
+        button:hover { background-color: #004b8d; }
+        button:disabled { background-color: #aaa; cursor: not-allowed; }
+        #profile-section, #task-section { display: none; }
+        .consent-text { max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; text-align: justify; line-height: 1.7; }
+        #example-questions-container { background-color: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        #user-questions-list-container { border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; min-height: 100px; background-color: #fafafa; }
+    </style>
 </head>
 <body>
-  <!-- Modal de alerta -->
-  <div id="custom-alert-overlay" class="custom-modal-overlay" style="display:none;">
-    <div class="custom-modal">
-      <div class="modal-header"><h3 id="modal-title">Alerta</h3></div>
-      <div class="modal-body"><p id="modal-message">Mensagem de exemplo.</p></div>
-      <div class="modal-footer"><button id="modal-close-btn">OK</button></div>
-    </div>
-  </div>
-
-  <div class="form-container">
-    <header class="page-header">
-      <img src="./logo-ffclrp.png" alt="Logotipo da FFCLRP-USP" class="logo">
-      <img src="./logo-ppgca.png" alt="Logotipo do PPG-CA" class="logo">
-    </header>
-    <main>
-      <h1>Plataforma de Pesquisa</h1>
-      <form id="research-form" novalidate>
-        <section id="gate-section"></section>
-        <section id="profile-section"></section>
-        <section id="task-section"></section>
-      </form>
-    </main>
-  </div>
-
-  <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMXtqpcgkbSYF34bFK3_5wj6mimV4fNEA0vwgM2Y5qXvEFCwKgI2N4cGOyuwSzYKEYrw/exec';
-
-    function showAlert(message, title = 'Alerta') { 
-      document.getElementById('modal-title').textContent = title; 
-      document.getElementById('modal-message').textContent = message; 
-      document.getElementById('custom-alert-overlay').style.display = 'flex'; 
-    }
-    document.getElementById('modal-close-btn').addEventListener('click', () => { 
-      document.getElementById('custom-alert-overlay').style.display = 'none'; 
-    });
-
-    const gateSection = document.getElementById('gate-section');
-    const profileSection = document.getElementById('profile-section');
-    const taskSection = document.getElementById('task-section');
-    const researchForm = document.getElementById('research-form');
-
-    const fixedExampleQuestions = [
-      "Liste as empresas que atuam no setor de mineração.",
-      "Informe o preço de fechamento da ação com a maior baixa percentual em 18/06/2025?",
-      "Qual foi o volume financeiro da ação com a menor variação absoluta no setor bancário em 10/06/2025?"
-    ];
-
-    document.addEventListener('DOMContentLoaded', () => {
-      setupGateSection();
-      setupProfileSection();
-      researchForm.addEventListener('submit', submitForm);
-    });
-
-    function setupGateSection() {
-      gateSection.innerHTML = `
-        <h2>Consentimento</h2>
-        <div class="question-block"><p>Seu Nome Completo:</p><input type="text" id="user-name" required></div>
-        <div class="question-block"><p>Seu E-mail:</p><input type="email" id="user-email" required></div>
-        <label class="checkbox-label"><input type="checkbox" id="age-check"> Declaro que sou maior de 18 anos.</label>
-        <label class="checkbox-label"><input type="checkbox" id="consent-check"> Concordo em participar.</label>
-        <button type="button" id="proceed-btn">Prosseguir para a Pesquisa</button>
-      `;
-      document.getElementById('proceed-btn').addEventListener('click', checkEmailBeforeProceed);
-    }
-
-    // 🔎 Verifica se e-mail já existe antes de prosseguir
-    function checkEmailBeforeProceed() {
-      const email = document.getElementById('user-email').value.trim();
-      if (!email) { showAlert('Preencha seu e-mail.'); return; }
-
-      const callbackName = 'checkEmailCallback_' + Date.now();
-      window[callbackName] = function(response) {
-        if (response.status === 'found') {
-          showAlert('Este e-mail já está registrado. Use outro.');
-        } else {
-          proceedToProfile();
-        }
-        delete window[callbackName];
-      };
-
-      const script = document.createElement('script');
-      script.src = `${SCRIPT_URL}?action=checkEmail&email=${encodeURIComponent(email)}&callback=${callbackName}`;
-      document.body.appendChild(script);
-    }
-
-    function setupProfileSection() {
-      profileSection.innerHTML = `
-        <h2>Perfil</h2>
-        <p>Qual seu conhecimento sobre a B3?</p>
-        <label><input type="radio" name="knowledge" value="iniciante"> Iniciante</label>
-        <label><input type="radio" name="knowledge" value="intermediário"> Intermediário</label>
-        <label><input type="radio" name="knowledge" value="avançado"> Avançado</label>
-        <button type="button" id="start-task-btn">Iniciar Tarefa</button>
-      `;
-      document.getElementById('start-task-btn').addEventListener('click', startTask);
-    }
-
-    function proceedToProfile() {
-      if (!document.getElementById('user-name').value.trim()) { showAlert('Preencha seu nome.'); return; }
-      if (!document.getElementById('user-email').value.trim()) { showAlert('Preencha seu e-mail.'); return; }
-      if (!document.getElementById('age-check').checked) { showAlert('É necessário ser maior de 18 anos.'); return; }
-      if (!document.getElementById('consent-check').checked) { showAlert('Você precisa aceitar o termo.'); return; }
-      gateSection.style.display = 'none';
-      profileSection.style.display = 'block';
-    }
-
-    let questionCount = 0;
-    function startTask() {
-      const knowledgeInput = profileSection.querySelector('input[name="knowledge"]:checked');
-      if (!knowledgeInput) { showAlert('Responda a pergunta do perfil.'); return; }
-
-      taskSection.innerHTML = `
-        <h2>Tarefa Principal</h2>
-        <div id="example-questions-container"><h3>Exemplos:</h3><ol id="example-questions-list"></ol></div>
-        <div class="question-block">
-          <input type="text" id="new-question-input" placeholder="Digite uma pergunta...">
-          <button type="button" id="add-question-btn">Adicionar</button>
-          <p id="question-counter-status"></p>
+    <!-- Modal de alerta -->
+    <div id="custom-alert-overlay" class="custom-modal-overlay" style="display:none;">
+        <div class="custom-modal">
+            <div class="modal-header"><h3 id="modal-title">Alerta</h3></div>
+            <div class="modal-body"><p id="modal-message">Mensagem de exemplo.</p></div>
+            <div class="modal-footer"><button id="modal-close-btn">OK</button></div>
         </div>
-        <div id="user-questions-list-container"><h4>Suas Perguntas:</h4><ol id="user-questions-list"></ol></div>
-        <button type="submit" id="final-submit-btn" disabled>Enviar Respostas</button>
-      `;
-      fixedExampleQuestions.forEach(q => {
-        const li = document.createElement('li'); li.textContent = q;
-        document.getElementById('example-questions-list').appendChild(li);
-      });
-      document.getElementById('add-question-btn').addEventListener('click', addQuestionToList);
-      questionCount = 0;
-      profileSection.style.display = 'none';
-      taskSection.style.display = 'block';
-      updateQuestionUI();
-    }
+    </div>
 
-    function addQuestionToList() {
-      const input = document.getElementById('new-question-input');
-      const questionText = input.value.trim();
-      if (!questionText) { showAlert('Digite uma pergunta.'); return; }
-      const li = document.createElement('li');
-      li.textContent = questionText;
-      document.getElementById('user-questions-list').appendChild(li);
-      input.value = '';
-      questionCount++;
-      updateQuestionUI();
-    }
+    <div class="form-container">
+        <header class="page-header">
+            <img src="./logo-ffclrp.png" alt="Logotipo da FFCLRP-USP" class="logo">
+            <img src="./logo-ppgca.png" alt="Logotipo do PPG-CA" class="logo">
+        </header>
+        
+        <main>
+            <h1>Plataforma de Pesquisa</h1>
+            <form id="research-form" novalidate>
+                <section id="gate-section"></section>
+                <section id="profile-section"></section>
+                <section id="task-section"></section>
+            </form>
+        </main>
+    </div>
 
-    function updateQuestionUI() {
-      const statusEl = document.getElementById('question-counter-status');
-      const finalSubmitBtn = document.getElementById('final-submit-btn');
-      if (questionCount < 10) {
-        statusEl.textContent = `${questionCount} de 20 perguntas. (Mínimo 10)`;
-        finalSubmitBtn.disabled = true;
-      } else if (questionCount >= 10 && questionCount < 20) {
-        statusEl.textContent = `${questionCount} de 20 perguntas. Você já pode enviar.`;
-        finalSubmitBtn.disabled = false;
-      } else {
-        statusEl.textContent = `20 perguntas atingidas.`;
-        finalSubmitBtn.disabled = false;
-        document.getElementById('add-question-btn').disabled = true;
-      }
-    }
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaQG3OQC-acL8GKVruRM_M9P4P7vEPQs58A21QRvAc2UvqB71TxKC492a5ZJkcSXnoIA/exec';
 
-    // 🚀 Envia os dados para o Google Sheets e trata resposta
-    function submitForm(event) {
-      event.preventDefault();
-      const questions = Array.from(document.querySelectorAll('#user-questions-list li')).map(li => li.textContent);
-      if (questions.length < 10) { showAlert('Adicione pelo menos 10 perguntas.'); return; }
-
-      const finalData = {
-        action: 'submitData',
-        name: document.getElementById('user-name').value,
-        email: document.getElementById('user-email').value,
-        profile: { knowledge: profileSection.querySelector('input[name="knowledge"]:checked').value },
-        userGeneratedQuestions: questions.join('\n')
-      };
-
-      const finalBtn = document.getElementById('final-submit-btn');
-      finalBtn.disabled = true;
-      finalBtn.textContent = 'Enviando...';
-
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify(finalData),
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (data.result === "success") {
-          showAlert('Respostas enviadas com sucesso! ✅', 'Sucesso');
-          researchForm.reset();
-          gateSection.innerHTML = '';
-          profileSection.innerHTML = '';
-          taskSection.innerHTML = '';
-          setupGateSection();
-          setupProfileSection();
-          gateSection.style.display = 'block';
-          profileSection.style.display = 'none';
-          taskSection.style.display = 'none';
-        } else {
-          showAlert('Erro ao enviar: ' + data.error, 'Erro');
+        function showAlert(message, title = 'Alerta') { 
+            document.getElementById('modal-title').textContent = title; 
+            document.getElementById('modal-message').textContent = message; 
+            document.getElementById('custom-alert-overlay').style.display = 'flex'; 
         }
-      })
-      .catch(error => {
-        console.error('Erro:', error);
-        showAlert('Erro ao enviar respostas. Tente novamente.', 'Erro');
-      })
-      .finally(() => {
-        finalBtn.disabled = false;
-        finalBtn.textContent = 'Enviar Respostas';
-      });
-    }
-  </script>
+        document.getElementById('modal-close-btn').addEventListener('click', () => { 
+            document.getElementById('custom-alert-overlay').style.display = 'none'; 
+        });
+
+        const gateSection = document.getElementById('gate-section');
+        const profileSection = document.getElementById('profile-section');
+        const taskSection = document.getElementById('task-section');
+        const researchForm = document.getElementById('research-form');
+
+        const fixedExampleQuestions = [
+            "Liste as empresas que atuam no setor de mineração.",
+            "Informe o preço de fechamento da ação com a maior baixa percentual em 18/06/2025?",
+            "Qual foi o volume financeiro da ação com a menor variação absoluta no setor bancário em 10/06/2025?"
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupGateSection();
+            setupProfileSection();
+            researchForm.addEventListener('submit', submitForm);
+        });
+
+        function setupGateSection() {
+            gateSection.innerHTML = `
+                <h2>Consentimento</h2>
+                <div class="question-block"><p>Seu Nome Completo:</p><input type="text" id="user-name" required></div>
+                <div class="question-block"><p>Seu E-mail:</p><input type="email" id="user-email" required></div>
+                <label class="checkbox-label"><input type="checkbox" id="age-check"> Declaro que sou maior de 18 anos.</label>
+                <label class="checkbox-label"><input type="checkbox" id="consent-check"> Concordo em participar.</label>
+                <button type="button" id="proceed-btn">Prosseguir para a Pesquisa</button>
+            `;
+            document.getElementById('proceed-btn').addEventListener('click', proceedToProfile);
+        }
+
+        function setupProfileSection() {
+            profileSection.innerHTML = `
+                <h2>Perfil</h2>
+                <p>Qual seu conhecimento sobre a B3?</p>
+                <label><input type="radio" name="knowledge" value="iniciante"> Iniciante</label>
+                <label><input type="radio" name="knowledge" value="intermediário"> Intermediário</label>
+                <label><input type="radio" name="knowledge" value="avançado"> Avançado</label>
+                <button type="button" id="start-task-btn">Iniciar Tarefa</button>
+            `;
+            document.getElementById('start-task-btn').addEventListener('click', startTask);
+        }
+
+        function proceedToProfile() {
+            if (!document.getElementById('user-name').value.trim()) { showAlert('Preencha seu nome.'); return; }
+            if (!document.getElementById('user-email').value.trim()) { showAlert('Preencha seu e-mail.'); return; }
+            if (!document.getElementById('age-check').checked) { showAlert('É necessário ser maior de 18 anos.'); return; }
+            if (!document.getElementById('consent-check').checked) { showAlert('Você precisa aceitar o termo.'); return; }
+            gateSection.style.display = 'none';
+            profileSection.style.display = 'block';
+        }
+
+        let questionCount = 0;
+        function startTask() {
+            const knowledgeInput = profileSection.querySelector('input[name="knowledge"]:checked');
+            if (!knowledgeInput) { showAlert('Responda a pergunta do perfil.'); return; }
+
+            taskSection.innerHTML = `
+                <h2>Tarefa Principal</h2>
+                <div id="example-questions-container"><h3>Exemplos:</h3><ol id="example-questions-list"></ol></div>
+                <div class="question-block">
+                    <input type="text" id="new-question-input" placeholder="Digite uma pergunta...">
+                    <button type="button" id="add-question-btn">Adicionar</button>
+                    <p id="question-counter-status"></p>
+                </div>
+                <div id="user-questions-list-container"><h4>Suas Perguntas:</h4><ol id="user-questions-list"></ol></div>
+                <button type="submit" id="final-submit-btn" disabled>Enviar Respostas</button>
+            `;
+            fixedExampleQuestions.forEach(q => {
+                const li = document.createElement('li'); li.textContent = q;
+                document.getElementById('example-questions-list').appendChild(li);
+            });
+            document.getElementById('add-question-btn').addEventListener('click', addQuestionToList);
+            questionCount = 0;
+            profileSection.style.display = 'none';
+            taskSection.style.display = 'block';
+            updateQuestionUI();
+        }
+
+        function addQuestionToList() {
+            const input = document.getElementById('new-question-input');
+            const questionText = input.value.trim();
+            if (!questionText) { showAlert('Digite uma pergunta.'); return; }
+            const li = document.createElement('li');
+            li.textContent = questionText;
+            document.getElementById('user-questions-list').appendChild(li);
+            input.value = '';
+            questionCount++;
+            updateQuestionUI();
+        }
+
+        function updateQuestionUI() {
+            const statusEl = document.getElementById('question-counter-status');
+            const finalSubmitBtn = document.getElementById('final-submit-btn');
+            if (questionCount < 10) {
+                statusEl.textContent = `${questionCount} de 20 perguntas. (Mínimo 10)`;
+                finalSubmitBtn.disabled = true;
+            } else if (questionCount >= 10 && questionCount < 20) {
+                statusEl.textContent = `${questionCount} de 20 perguntas. Você já pode enviar.`;
+                finalSubmitBtn.disabled = false;
+            } else {
+                statusEl.textContent = `20 perguntas atingidas.`;
+                finalSubmitBtn.disabled = false;
+                document.getElementById('add-question-btn').disabled = true;
+            }
+        }
+
+        // 🚀 Envia os dados para o Google Sheets (sem tentar ler resposta)
+        function submitForm(event) {
+            event.preventDefault();
+            const questions = Array.from(document.querySelectorAll('#user-questions-list li')).map(li => li.textContent);
+            if (questions.length < 10) { showAlert('Adicione pelo menos 10 perguntas.'); return; }
+
+            const finalData = {
+                action: 'submitData',
+                name: document.getElementById('user-name').value,
+                email: document.getElementById('user-email').value,
+                profile: { knowledge: profileSection.querySelector('input[name="knowledge"]:checked').value },
+                userGeneratedQuestions: questions.join('\n')
+            };
+
+            const finalBtn = document.getElementById('final-submit-btn');
+            finalBtn.disabled = true;
+            finalBtn.textContent = 'Enviando...';
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(finalData),
+                headers: { 'Content-Type': 'application/json' },
+                mode: 'no-cors' // 👈 resolve CORS
+            }).then(() => {
+                showAlert('Respostas enviadas com sucesso! ✅', 'Sucesso');
+                researchForm.reset();
+                gateSection.innerHTML = '';
+                profileSection.innerHTML = '';
+                taskSection.innerHTML = '';
+                setupGateSection();
+                setupProfileSection();
+                gateSection.style.display = 'block';
+                profileSection.style.display = 'none';
+                taskSection.style.display = 'none';
+            }).catch(error => {
+                console.error('Erro:', error);
+                showAlert('Erro ao enviar respostas. Tente novamente.', 'Erro');
+            }).finally(() => {
+                finalBtn.disabled = false;
+                finalBtn.textContent = 'Enviar Respostas';
+            });
+        }
+    </script>
 </body>
 </html>
