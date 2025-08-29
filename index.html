@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisa: Geração de Perguntas sobre o Mercado de Ações</title>
     <style>
-        /* (mantive todo o seu CSS original) */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         :root { --primary-color: #003366; --light-gray: #f4f4f9; --dark-gray: #333; --border-color: #ddd; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--light-gray); color: var(--dark-gray); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
@@ -27,13 +26,32 @@
         button:disabled { background-color: #aaa; cursor: not-allowed; }
         #profile-section, #task-section { display: none; }
         .consent-text { max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; text-align: justify; line-height: 1.7; }
+        .consent-text p, .consent-text li { margin-bottom: 1em; }
+        .consent-text ol { padding-left: 20px; }
+        .consent-text ul li { list-style-type: '- '; }
         #example-questions-container { background-color: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        #example-questions-container h3 { margin-top: 0; font-size: 1.1rem; }
+        #example-questions-list { padding-left: 20px; margin-top: 15px; }
+        #example-questions-list li { margin-bottom: 8px; }
+        .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .custom-modal { background: white; padding: 0; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 400px; text-align: center; animation: modal-fade-in 0.3s ease; }
+        .modal-header { background-color: var(--primary-color); color: white; padding: 15px 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; }
+        .modal-header h3 { margin: 0; font-size: 1.2rem; }
+        .modal-body { padding: 25px 20px; font-size: 1rem; line-height: 1.6; }
+        .modal-footer { padding: 15px 20px; border-top: 1px solid var(--border-color); }
+        .modal-footer button { display: inline-block; width: auto; padding: 10px 30px; margin: 0; background-color: var(--primary-color); }
+        @keyframes modal-fade-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .question-input-area { display: flex; gap: 10px; margin-bottom: 15px; }
+        .question-input-area input { flex-grow: 1; }
+        .question-input-area button { width: auto; margin-top: 0; padding: 12px 20px; }
+        #question-counter-status { text-align: center; font-weight: 600; color: var(--primary-color); margin-bottom: 20px; }
         #user-questions-list-container { border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; min-height: 100px; background-color: #fafafa; }
+        #user-questions-list-container h4 { margin-top: 0; }
+        #user-questions-list { padding-left: 20px; }
     </style>
 </head>
 <body>
-    <!-- Modal de alerta -->
-    <div id="custom-alert-overlay" class="custom-modal-overlay" style="display:none;">
+    <div id="custom-alert-overlay" class="custom-modal-overlay">
         <div class="custom-modal">
             <div class="modal-header"><h3 id="modal-title">Alerta</h3></div>
             <div class="modal-body"><p id="modal-message">Mensagem de exemplo.</p></div>
@@ -42,11 +60,11 @@
     </div>
 
     <div class="form-container">
-        <header class="page-header">
-            <img src="./logo-ffclrp.png" alt="Logotipo da FFCLRP-USP" class="logo">
-            <img src="./logo-ppgca.png" alt="Logotipo do PPG-CA" class="logo">
-        </header>
-        
+		<header class="page-header">
+			<img src="./logo-ffclrp.png" alt="Logotipo da FFCLRP-USP" class="logo">
+			<img src="./logo-ppgca.png" alt="Logotipo do PPG-CA" class="logo">
+		</header>
+		
         <main>
             <h1>Plataforma de Pesquisa</h1>
             <form id="research-form" novalidate>
@@ -58,8 +76,11 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaQG3OQC-acL8GKVruRM_M9P4P7vEPQs58A21QRvAc2UvqB71TxKC492a5ZJkcSXnoIA/exec';
+        
 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2ZTRIYFgjYkPVfGRUgvrRKNSjjQ7SKpc_8z3DzyYa9hWr-x7PeoUUrIoI8huLsCQthg/exec';
+
+        // Funções auxiliares para o modal de alerta
         function showAlert(message, title = 'Alerta') { 
             document.getElementById('modal-title').textContent = title; 
             document.getElementById('modal-message').textContent = message; 
@@ -68,152 +89,305 @@
         document.getElementById('modal-close-btn').addEventListener('click', () => { 
             document.getElementById('custom-alert-overlay').style.display = 'none'; 
         });
-
+        
+        // Elementos do DOM
         const gateSection = document.getElementById('gate-section');
         const profileSection = document.getElementById('profile-section');
         const taskSection = document.getElementById('task-section');
         const researchForm = document.getElementById('research-form');
-
-        const fixedExampleQuestions = [
-            "Liste as empresas que atuam no setor de mineração.",
-            "Informe o preço de fechamento da ação com a maior baixa percentual em 18/06/2025?",
-            "Qual foi o volume financeiro da ação com a menor variação absoluta no setor bancário em 10/06/2025?"
-        ];
-
+        
+        // Perguntas de exemplo fixas
+        const fixedExampleQuestions = ["Liste as empresas que atuam no setor de mineração.",
+		"Informe o preço de fechamento da ação com a maior baixa percentual em 18/06/2025?",
+		"Qual foi o volume financeiro da ação com a menor varição absoluta no setor bancário em 10/06/2025?"];
+        
+        // Inicialização do formulário quando o DOM estiver carregado
         document.addEventListener('DOMContentLoaded', () => {
             setupGateSection();
             setupProfileSection();
             researchForm.addEventListener('submit', submitForm);
         });
 
+        // Configura a seção de consentimento
         function setupGateSection() {
             gateSection.innerHTML = `
-                <h2>Consentimento</h2>
-                <div class="question-block"><p>Seu Nome Completo:</p><input type="text" id="user-name" required></div>
-                <div class="question-block"><p>Seu E-mail:</p><input type="email" id="user-email" required></div>
-                <label class="checkbox-label"><input type="checkbox" id="age-check"> Declaro que sou maior de 18 anos.</label>
-                <label class="checkbox-label"><input type="checkbox" id="consent-check"> Concordo em participar.</label>
+                <h2>Consentimento para Participação</h2>
+                <p class="section-intro">Por favor, preencha as informações abaixo e leia o Termo de Consentimento para continuar.</p>
+                <div class="question-block">
+                    <p>Seu Nome Completo:</p>
+                    <input type="text" id="user-name" name="user-name" required>
+                </div>
+                <div class="question-block">
+                    <p>Seu E-mail:</p>
+                    <input type="email" id="user-email" name="user-email" required>
+                </div>
+                <div class="question-block">
+                    <p class="consent-title">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</p>
+                    <div class="consent-text">
+                        <p><strong>PROJETO: Geração de consultas SPARQL a partir de linguagem natural</strong></p>
+                        <p>Você está sendo convidado(a) a participar do projeto de pesquisa acima citado. O documento abaixo contém todas as informações necessárias sobre a pesquisa que estamos fazendo. Sua colaboração nesse estudo será de muita importância para nós.</p>
+                        <p>Eu, ______________________________________________, abaixo assinado, concordo de livre e espontânea vontade em participar do estudo “Geração de consultas SPARQL a partir de linguagem natural”, e esclareço que obtive todas as informações.</p>
+                        <p>Estou ciente de que:</p>
+                        <ol>
+                            <li>O estudo faz parte de um projeto de mestrado do Programa de Pós-Graduação em Computação Aplicada (PPG-CA) da Faculdade de Filosofia, Ciências e Letras de Ribeirão Preto (FFCLRP) da Universidade de São Paulo e tem por objetivo propor uma abordagem para a tradução de perguntas realizadas em linguagem natural (português) para consultas SPARQL, bem como desenvolver uma ferramenta de suporte (Natural2SPARQL) para essa transformação.</li>
+                            <li>Como parte da metodologia do projeto, minha participação será organizada em duas etapas principais. Na primeira, responderei a uma pergunta sobre meus conhecimentos prévios a respeito do mercado de ações da bolsa de valores brasileira, a B3. Em seguida, serei exposto a um conjunto de três exemplos de perguntas — uma pergunta com complexidade simples, uma pergunta com complexidade intermediária e uma pergunta com complexidade avançada —, a partir do qual terei como tarefa elaborar entre 10 e 20 novas perguntas em linguagem natural (português). Essas perguntas não poderão ser idênticas aos exemplos apresentados e deverão estar estritamente relacionadas ao domínio da negociação de ações na B3, com foco específico no período de junho de 2025.<br><br>É fundamental que as perguntas se restrinjam a dados quantitativos e a eventos observáveis diretamente no pregão. Assim, devem contemplar informações como:
+                                <ul>
+                                    <li>Nomes de empresas (e.g., Vale, Petrobras) e seus respectivos códigos de negociação (tickers), como VALE3, PETR4 e TAEE11;</li>
+                                    <li>Setores de atuação das empresas (e.g., Siderurgia, Bancos, Transporte);</li>
+                                    <li>Índices da B3 (e.g., Ibovespa - IBOV, Financeiro - IFNC, Materiais Básicos - IMAT);</li>
+                                    <li>Tipos de ações (e.g., Ordinárias - ON, Preferenciais - PN e Units);</li>
+                                    <li>Métricas diárias de negociação (e.g., preços de abertura e fechamento, preços máximos e mínimos, volume negociado).</li>
+                                </ul>
+                                Nesse sentido, reconheço que não devo formular perguntas sobre outros aspectos do universo financeiro ou corporativo das empresas listadas. Devem ser evitados, por exemplo: análises fundamentadas em balanços patrimoniais ou demonstrativos de resultados (DRE); questões ligadas à governança corporativa ou à composição acionária; temas relacionados a políticas de distribuição de proventos (como dividendos e juros sobre capital próprio – JCP); recomendações de analistas e preços-alvo; bem como notícias e fatos relevantes que não estejam diretamente vinculados às transações realizadas no período em análise.
+                            </li>
+                            <li>A pesquisa não envolve a coleta de dados pessoais dos participantes, apenas informações básicas sobre o conhecimento do participante do funcionamento do mercado de ações/B3 e o conjunto de perguntas propostas. Os resultados obtidos durante essa pesquisa serão mantidos em sigilo. Somente pessoas que fazem parte da equipe da pesquisa poderão ter acesso aos seus registros para acompanhar a pesquisa e analisar os dados obtidos, de acordo com as normas brasileiras que os protegem. Os resultados obtidos somente poderão ser divulgados de forma anônima em publicações científicas produzidas como decorrência do projeto, incluindo a própria dissertação de mestrado tema do projeto.</li>
+                            <li>Caso desejar, poderei tomar conhecimento dos resultados ao final desta pesquisa.</li>
+                        </ol>
+                        <p>Ribeirão Preto, ......... de ..................... de 2025</p>
+                        <hr>
+                        <p>No caso de haver dúvidas sobre esse estudo, você poderá consultar:</p>
+                        <p><strong>Pesquisador Responsável: Heber Gustavo Xavier de Castro</strong><br>Programa de Pós-Graduação em Computação Aplicada (PPG-CA)<br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>E-mail: heber.castro@usp.br</p>
+                        <p><strong>Orientador do Pesquisador Responsável: Prof. Dr. Cléver Ricardo Guareis de Farias</strong><br>Departamento de Computação e Matemática (DCM/FFCLRP/USP)<br>Av. Bandeirantes, 3900 – CEP 14040-901 – Ribeirão Preto (SP)<br>Fone: (16) 3315-0564<br>E-mail: farias@ffclrp.usp.br</p>
+                        <p>Para denúncias e/ou reclamações referentes aos aspectos éticos da pesquisa, entrar em contato com:</p>
+                        <p><strong>Comitê de Ética em Pesquisa (CEP) da FFCLRP USP</strong><br>Av. Bandeirantes, 3900 - Bloco 23 - Casa 37 - 14040-901 - Ribeirão Preto (SP)<br>Fone: (16) 3315-4811 / Fax: (16) 3633-2660<br>E-mail: coetp@ffclrp.usp.br / homepage: http://www.ffclrp.usp.br</p>
+                    </div>
+                    <div class="question-block" style="margin-bottom: 10px;">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="age-check" name="age-check"> Declaro que sou maior de 18 anos.
+                        </label>
+                    </div>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="consent-check" name="consent-check"> Concordo em participar. O ato de preencher o questionário contido neste formulário indica minha concordância na participação na pesquisa.
+                    </label>
+                </div>
                 <button type="button" id="proceed-btn">Prosseguir para a Pesquisa</button>
             `;
             document.getElementById('proceed-btn').addEventListener('click', proceedToProfile);
         }
-
+        
+        // Configura a seção de perfil
         function setupProfileSection() {
-            profileSection.innerHTML = `
-                <h2>Perfil</h2>
-                <p>Qual seu conhecimento sobre a B3?</p>
-                <label><input type="radio" name="knowledge" value="iniciante"> Iniciante</label>
-                <label><input type="radio" name="knowledge" value="intermediário"> Intermediário</label>
-                <label><input type="radio" name="knowledge" value="avançado"> Avançado</label>
+             profileSection.innerHTML = `
+                <h2>Perfil do Participante</h2>
+                <p class="section-intro">Por favor, responda à pergunta abaixo para que possamos contextualizar suas respostas.</p>
+                <div class="question-block">
+                    <p>Como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p>
+                    <div class="options">
+                        <label><input type="radio" name="knowledge" value="1" required><span><strong>Pouco ou nenhum conhecimento:</strong><br>Não possuo experiência prática em compra ou venda de ações na B3 e tenho conhecimento limitado ou nulo sobre o funcionamento do mercado acionário.</span></label>
+                        <label><input type="radio" name="knowledge" value="2"><span><strong>Conhecimento intermediário:</strong><br>Já realizei algumas operações de compra e venda de ações na B3 ou acompanho o mercado com certa frequência, possuindo noções básicas sobre indicadores, preços e setores, mas sem prática contínua ou aprofundada.</span></label>
+                        <label><input type="radio" name="knowledge" value="3"><span><strong>Conhecimento avançado:</strong><br>Opero regularmente na B3 ou já acumulei experiência consistente em negociações, compreendendo em detalhe o funcionamento do pregão, métricas de negociação e características de diferentes ações e índices.</span></label>
+                    </div>
+                </div>
                 <button type="button" id="start-task-btn">Iniciar Tarefa</button>
             `;
             document.getElementById('start-task-btn').addEventListener('click', startTask);
         }
-
+        
+        // --- FUNÇÃO DE VERIFICAÇÃO DE E-MAIL USANDO JSONP PARA TRATAR O CORS ---
         function proceedToProfile() {
-            if (!document.getElementById('user-name').value.trim()) { showAlert('Preencha seu nome.'); return; }
-            if (!document.getElementById('user-email').value.trim()) { showAlert('Preencha seu e-mail.'); return; }
-            if (!document.getElementById('age-check').checked) { showAlert('É necessário ser maior de 18 anos.'); return; }
-            if (!document.getElementById('consent-check').checked) { showAlert('Você precisa aceitar o termo.'); return; }
-            gateSection.style.display = 'none';
-            profileSection.style.display = 'block';
+            if (!document.getElementById('user-name').value.trim()) { showAlert('Por favor, preencha seu nome.'); return; }
+            const email = document.getElementById('user-email').value.trim();
+            if (!email) { showAlert('Por favor, preencha seu e-mail.'); return; }
+            if (!document.getElementById('age-check').checked) { showAlert('Você deve declarar ser maior de 18 anos para participar.'); return; }
+            if (!document.getElementById('consent-check').checked) { showAlert('É necessário concordar com o Termo para participar.'); return; }
+
+            const proceedBtn = document.getElementById('proceed-btn');
+            proceedBtn.disabled = true;
+            proceedBtn.textContent = 'Verificando...';
+
+            // Geração de um nome de callback único para evitar conflitos
+            const callbackName = 'checkEmailCallback_' + Date.now(); 
+            const script = document.createElement('script');
+            
+            // Constrói a URL para a requisição GET do Apps Script com JSONP
+            script.src = `${SCRIPT_URL}?action=checkEmail&email=${encodeURIComponent(email)}&callback=${callbackName}`;
+            
+            // Define a função de callback global que será chamada pelo Apps Script
+            window[callbackName] = (data) => {
+                if (data.status === 'found') {
+                    showAlert('Este e-mail já foi utilizado para responder à pesquisa. Agradecemos seu interesse, mas cada participante só pode enviar respostas uma vez.', 'Participação Duplicada');
+                } else {
+                    gateSection.style.display = 'none';
+                    profileSection.style.display = 'block';
+                }
+                // Limpeza: remove o script e a função global após o uso
+                document.head.removeChild(script); 
+                delete window[callbackName]; 
+                proceedBtn.disabled = false;
+                proceedBtn.textContent = 'Prosseguir para a Pesquisa';
+            };
+
+            // Trata erros de carregamento do script (ex: problemas de rede)
+            script.onerror = () => {
+                console.error('Erro na verificação de e-mail: falha ao carregar script.');
+                showAlert('Não foi possível verificar o e-mail. Por favor, verifique sua conexão com a internet e tente novamente.', 'Erro de Rede');
+                document.head.removeChild(script);
+                delete window[callbackName];
+                proceedBtn.disabled = false;
+                proceedBtn.textContent = 'Prosseguir para a Pesquisa';
+            };
+
+            // Adiciona o script ao cabeçalho do documento para executar a requisição
+            document.head.appendChild(script);
         }
 
-        let questionCount = 0;
+        let questionCount = 0; // Contador de perguntas geradas pelo usuário
+
+        // Inicia a seção da tarefa principal
         function startTask() {
             const knowledgeInput = profileSection.querySelector('input[name="knowledge"]:checked');
-            if (!knowledgeInput) { showAlert('Responda a pergunta do perfil.'); return; }
-
+            if (!knowledgeInput) { showAlert('Por favor, responda a pergunta do perfil para continuar.'); return; }
+            
             taskSection.innerHTML = `
                 <h2>Tarefa Principal</h2>
-                <div id="example-questions-container"><h3>Exemplos:</h3><ol id="example-questions-list"></ol></div>
+                <div id="example-questions-container">
+                    <h3>A seguir, apresentamos ${fixedExampleQuestions.length} exemplos de perguntas. Estes são meros exemplos, <strong>evite copiá-los</strong>.</h3>
+                    <ol id="example-questions-list"></ol>
+                </div>
                 <div class="question-block">
-                    <input type="text" id="new-question-input" placeholder="Digite uma pergunta...">
-                    <button type="button" id="add-question-btn">Adicionar</button>
+                    <p>Por favor, elabore de 10 a 20 perguntas, uma de cada vez:</p>
+                    <div class="question-input-area">
+                        <input type="text" id="new-question-input" placeholder="Digite uma pergunta aqui...">
+                        <button type="button" id="add-question-btn">Adicionar Pergunta</button>
+                    </div>
                     <p id="question-counter-status"></p>
                 </div>
-                <div id="user-questions-list-container"><h4>Suas Perguntas:</h4><ol id="user-questions-list"></ol></div>
+                <div id="user-questions-list-container">
+                    <h4>Suas Perguntas Adicionadas:</h4>
+                    <ol id="user-questions-list"></ol>
+                </div>
                 <button type="submit" id="final-submit-btn" disabled>Enviar Respostas</button>
             `;
-            fixedExampleQuestions.forEach(q => {
-                const li = document.createElement('li'); li.textContent = q;
-                document.getElementById('example-questions-list').appendChild(li);
+            
+            const exampleList = taskSection.querySelector('#example-questions-list');
+            fixedExampleQuestions.forEach(q => { 
+                const li = document.createElement('li'); 
+                li.textContent = q; 
+                exampleList.appendChild(li); 
             });
+            
             document.getElementById('add-question-btn').addEventListener('click', addQuestionToList);
-            questionCount = 0;
+            
+            questionCount = 0; // Reinicia o contador para a tarefa
+            updateQuestionUI();
             profileSection.style.display = 'none';
             taskSection.style.display = 'block';
-            updateQuestionUI();
         }
 
+        // Adiciona uma pergunta à lista do usuário
         function addQuestionToList() {
             const input = document.getElementById('new-question-input');
             const questionText = input.value.trim();
-            if (!questionText) { showAlert('Digite uma pergunta.'); return; }
+            if (!questionText) { showAlert('Por favor, digite uma pergunta antes de adicionar.'); return; }
+            
+            const list = document.getElementById('user-questions-list');
             const li = document.createElement('li');
             li.textContent = questionText;
-            document.getElementById('user-questions-list').appendChild(li);
-            input.value = '';
+            list.appendChild(li);
+            
+            input.value = ''; // Limpa o campo de input
+            input.focus(); // Coloca o foco de volta no campo
             questionCount++;
             updateQuestionUI();
         }
-
+        
+        // Atualiza a UI do contador de perguntas e o botão de envio
         function updateQuestionUI() {
             const statusEl = document.getElementById('question-counter-status');
             const finalSubmitBtn = document.getElementById('final-submit-btn');
-            if (questionCount < 10) {
-                statusEl.textContent = `${questionCount} de 20 perguntas. (Mínimo 10)`;
+            const addQuestionBtn = document.getElementById('add-question-btn');
+            const newQuestionInput = document.getElementById('new-question-input');
+
+            if (questionCount < 10) { 
+                statusEl.textContent = `${questionCount} de 20 perguntas adicionadas. (Mínimo de 10 para enviar)`; 
                 finalSubmitBtn.disabled = true;
-            } else if (questionCount >= 10 && questionCount < 20) {
-                statusEl.textContent = `${questionCount} de 20 perguntas. Você já pode enviar.`;
+                addQuestionBtn.disabled = false;
+                newQuestionInput.disabled = false;
+                newQuestionInput.placeholder = 'Digite uma pergunta aqui...';
+            } else if (questionCount >= 10 && questionCount < 20) { 
+                statusEl.textContent = `${questionCount} de 20 perguntas adicionadas. Você já pode enviar ou adicionar mais.`; 
                 finalSubmitBtn.disabled = false;
-            } else {
-                statusEl.textContent = `20 perguntas atingidas.`;
-                finalSubmitBtn.disabled = false;
-                document.getElementById('add-question-btn').disabled = true;
+                addQuestionBtn.disabled = false;
+                newQuestionInput.disabled = false;
+                newQuestionInput.placeholder = 'Digite uma pergunta aqui...';
+            } else if (questionCount >= 20) { 
+                statusEl.textContent = `Máximo de 20 perguntas atingido. Por favor, envie suas respostas.`; 
+                finalSubmitBtn.disabled = false; 
+                addQuestionBtn.disabled = true; 
+                newQuestionInput.disabled = true; 
+                newQuestionInput.placeholder = 'Máximo de perguntas alcançado.'; 
             }
         }
-
-        // 🚀 Envia os dados para o Google Sheets (sem tentar ler resposta)
+        
+        // --- FUNÇÃO PARA SUBMETER O FORMULÁRIO COMPLETO ---
         function submitForm(event) {
-            event.preventDefault();
-            const questions = Array.from(document.querySelectorAll('#user-questions-list li')).map(li => li.textContent);
-            if (questions.length < 10) { showAlert('Adicione pelo menos 10 perguntas.'); return; }
+            event.preventDefault(); // Impede o envio padrão do formulário
+            const questionsList = document.querySelectorAll('#user-questions-list li');
+            if (questionsList.length < 10) { 
+                showAlert('Você precisa adicionar no mínimo 10 perguntas para poder enviar.'); 
+                return; 
+            }
 
+            const userGeneratedQuestionsArray = Array.from(questionsList).map(li => li.textContent);
+            
             const finalData = {
-                action: 'submitData',
+                action: 'submitData', // Identifica a ação para o doPost no Apps Script
                 name: document.getElementById('user-name').value,
                 email: document.getElementById('user-email').value,
                 profile: { knowledge: profileSection.querySelector('input[name="knowledge"]:checked').value },
-                userGeneratedQuestions: questions.join('\n')
+                userGeneratedQuestions: userGeneratedQuestionsArray.join('\n') // Junta as perguntas com quebras de linha
             };
 
-            const finalBtn = document.getElementById('final-submit-btn');
-            finalBtn.disabled = true;
-            finalBtn.textContent = 'Enviando...';
-
+            const submitButton = document.getElementById('final-submit-btn');
+            if (submitButton) { 
+                submitButton.disabled = true; 
+                submitButton.textContent = 'Enviando...'; 
+            }
+            
+            // Requisição POST para o Google Apps Script para salvar os dados
             fetch(SCRIPT_URL, {
-                method: 'POST',
+                method: 'POST', 
                 body: JSON.stringify(finalData),
-                headers: { 'Content-Type': 'application/json' },
-                mode: 'no-cors' // 👈 resolve CORS
-            }).then(() => {
-                showAlert('Respostas enviadas com sucesso! ✅', 'Sucesso');
-                researchForm.reset();
-                gateSection.innerHTML = '';
-                profileSection.innerHTML = '';
-                taskSection.innerHTML = '';
-                setupGateSection();
-                setupProfileSection();
-                gateSection.style.display = 'block';
-                profileSection.style.display = 'none';
-                taskSection.style.display = 'none';
-            }).catch(error => {
-                console.error('Erro:', error);
-                showAlert('Erro ao enviar respostas. Tente novamente.', 'Erro');
-            }).finally(() => {
-                finalBtn.disabled = false;
-                finalBtn.textContent = 'Enviar Respostas';
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => {
+                if (!response.ok) { // Verifica se a resposta HTTP foi bem-sucedida
+                    // Tenta ler o erro do corpo da resposta, se disponível
+                    return response.json().catch(() => {
+                        throw new Error(`A resposta da rede não foi "ok" (Status: ${response.status})`);
+                    }).then(errorData => {
+                        throw new Error(errorData.error || `A resposta da rede não foi "ok" (Status: ${response.status})`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.result === 'success') {
+                    showAlert('Obrigado pela sua participação! Suas respostas foram enviadas com sucesso.', 'Sucesso');
+                    researchForm.reset(); // Limpa o formulário
+                    // Reinicia as seções para permitir um novo preenchimento
+                    gateSection.innerHTML = '';
+                    profileSection.innerHTML = '';
+                    taskSection.innerHTML = '';
+                    setupGateSection();
+                    setupProfileSection();
+                    gateSection.style.display = 'block';
+                    profileSection.style.display = 'none';
+                    taskSection.style.display = 'none';
+                } else {
+                    throw new Error(data.error || 'Ocorreu um erro desconhecido no servidor.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao enviar dados:', error);
+                showAlert('Ocorreu um erro ao enviar suas respostas. Verifique sua conexão e tente novamente. Detalhes: ' + error.message, 'Erro no Envio');
+            })
+            .finally(() => {
+                const finalBtn = document.getElementById('final-submit-btn');
+                if(finalBtn) { // Garante que o botão existe antes de tentar manipulá-lo
+                    finalBtn.disabled = false; 
+                    finalBtn.textContent = 'Enviar Respostas'; 
+                }
             });
         }
     </script>
