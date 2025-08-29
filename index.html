@@ -77,8 +77,7 @@
 
     <script>
         
-        // ATENÇÃO: SUBSTITUA ESTA URL PELA URL DE IMPLANTAÇÃO MAIS RECENTE DO SEU GOOGLE APPS SCRIPT.
-        // A URL fornecida no exemplo é APENAS um placeholder.
+
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyp15J9KSxIWyvjniEuUxfYJNwux5JP6eXL0lCDG1wqSu9GUsjgM8sFd8-IkRgjkm_VtQ/exec';
 
         // Funções auxiliares para o modal de alerta
@@ -98,7 +97,9 @@
         const researchForm = document.getElementById('research-form');
         
         // Perguntas de exemplo fixas
-        const fixedExampleQuestions = ["Qual foi o preço de fechamento da ação preferencial da Braskem em 11/06/2025?", "Qual o setor de atuação da Bradesco?", "Quais as 2 ações de maior variação percentual no pregão de 30/06/2025?", "Qual foi a quantidade de negócios da ação com a maior baixa percentual em 18/06/2025?", "Qual foi a quantidade de negócios da ação com a maior alta percentual no SMLL em 10/06/2025?"];
+        const fixedExampleQuestions = ["Liste as empresas que atuam no setor de mineração.",
+		"Informe o preço de fechamento da ação com a maior baixa percentual em 18/06/2025?",
+		"Qual foi o volume financeiro da ação com a menor varição absoluta no setor bancário em 10/06/2025?"];
         
         // Inicialização do formulário quando o DOM estiver carregado
         document.addEventListener('DOMContentLoaded', () => {
@@ -129,7 +130,7 @@
                         <p>Estou ciente de que:</p>
                         <ol>
                             <li>O estudo faz parte de um projeto de mestrado do Programa de Pós-Graduação em Computação Aplicada (PPG-CA) da Faculdade de Filosofia, Ciências e Letras de Ribeirão Preto (FFCLRP) da Universidade de São Paulo e tem por objetivo propor uma abordagem para a tradução de perguntas realizadas em linguagem natural (português) para consultas SPARQL, bem como desenvolver uma ferramenta de suporte (Natural2SPARQL) para essa transformação.</li>
-                            <li>Como parte da metodologia do projeto, minha participação será organizada em duas etapas principais. Na primeira, responderei a uma pergunta sobre meus conhecimentos prévios a respeito do mercado de ações da bolsa de valores brasileira, a B3. Em seguida, serei exposto a um conjunto de cinco exemplos de perguntas — duas simples, duas intermediárias e uma complexa —, a partir do qual terei como tarefa elaborar entre 10 e 20 novas perguntas em linguagem natural (português). Essas perguntas não poderão ser idênticas aos exemplos apresentados e deverão estar estritamente relacionadas ao domínio da negociação de ações na B3, com foco específico no período de junho de 2025.<br><br>É fundamental que as perguntas se restrinjam a dados quantitativos e a eventos observáveis diretamente no pregão. Assim, devem contemplar informações como:
+                            <li>Como parte da metodologia do projeto, minha participação será organizada em duas etapas principais. Na primeira, responderei a uma pergunta sobre meus conhecimentos prévios a respeito do mercado de ações da bolsa de valores brasileira, a B3. Em seguida, serei exposto a um conjunto de três exemplos de perguntas — uma pergunta com complexidade simples, uma pergunta com complexidade intermediária e uma pergunta com complexidade avançada —, a partir do qual terei como tarefa elaborar entre 10 e 20 novas perguntas em linguagem natural (português). Essas perguntas não poderão ser idênticas aos exemplos apresentados e deverão estar estritamente relacionadas ao domínio da negociação de ações na B3, com foco específico no período de junho de 2025.<br><br>É fundamental que as perguntas se restrinjam a dados quantitativos e a eventos observáveis diretamente no pregão. Assim, devem contemplar informações como:
                                 <ul>
                                     <li>Nomes de empresas (e.g., Vale, Petrobras) e seus respectivos códigos de negociação (tickers), como VALE3, PETR4 e TAEE11;</li>
                                     <li>Setores de atuação das empresas (e.g., Siderurgia, Bancos, Transporte);</li>
@@ -172,9 +173,9 @@
                 <div class="question-block">
                     <p>Como você classificaria seu conhecimento geral sobre a Bolsa de Valores (B3)?</p>
                     <div class="options">
-                        <label><input type="radio" name="knowledge" value="1" required><span><strong>Pouco ou nenhum conhecimento:</strong><br>Não possui experiência prática em compra ou venda de ações na B3 e tem conhecimento limitado ou nulo sobre o funcionamento do mercado acionário.</span></label>
-                        <label><input type="radio" name="knowledge" value="2"><span><strong>Conhecimento intermediário:</strong><br>Já realizou algumas operações de compra e venda de ações na B3 ou acompanha o mercado com certa frequência, possuindo noções básicas sobre indicadores, preços e setores, mas sem prática contínua ou aprofundada.</span></label>
-                        <label><input type="radio" name="knowledge" value="3"><span><strong>Conhecimento avançado:</strong><br>Opera regularmente na B3 ou já acumulou experiência consistente em negociações, compreendendo em detalhe o funcionamento do pregão, métricas de negociação e características de diferentes ações e índices.</span></label>
+                        <label><input type="radio" name="knowledge" value="1" required><span><strong>Pouco ou nenhum conhecimento:</strong><br>Não possuo experiência prática em compra ou venda de ações na B3 e tenho conhecimento limitado ou nulo sobre o funcionamento do mercado acionário.</span></label>
+                        <label><input type="radio" name="knowledge" value="2"><span><strong>Conhecimento intermediário:</strong><br>Já realizei algumas operações de compra e venda de ações na B3 ou acompanho o mercado com certa frequência, possuindo noções básicas sobre indicadores, preços e setores, mas sem prática contínua ou aprofundada.</span></label>
+                        <label><input type="radio" name="knowledge" value="3"><span><strong>Conhecimento avançado:</strong><br>Opero regularmente na B3 ou já acumulei experiência consistente em negociações, compreendendo em detalhe o funcionamento do pregão, métricas de negociação e características de diferentes ações e índices.</span></label>
                     </div>
                 </div>
                 <button type="button" id="start-task-btn">Iniciar Tarefa</button>
